@@ -18,8 +18,8 @@ async function callGeminiRaw(prompt) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("AI_BUSY");
 
-    // API'den alınan güncel model listesi (1.5 sürümü bu key için aktif değil)
-    const models = ["gemini-2.0-flash", "gemini-flash-latest", "gemini-pro-latest"];
+    // API'den alınan güncel model listesi (flash-latest kararlı sürüm olduğu için öne alındı)
+    const models = ["gemini-flash-latest", "gemini-2.0-flash", "gemini-pro-latest"];
 
     for (const model of models) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
