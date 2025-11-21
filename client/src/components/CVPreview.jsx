@@ -22,6 +22,25 @@ const getFontFamily = (fontName) => {
     return "'Inter', sans-serif";
 };
 
+const cleanMarkdown = (markdown) => {
+    if (!markdown) return '';
+    let cleaned = markdown;
+
+    // 1. Ensure newlines before headers
+    cleaned = cleaned.replace(/([^\n])(## )/g, '$1\n\n$2');
+
+    // 2. Ensure newlines before list items
+    cleaned = cleaned.replace(/([^\n])(\* )/g, '$1\n$2');
+
+    // 3. Fix missing spaces after bullets (*Item -> * Item)
+    cleaned = cleaned.replace(/\*([^\s])/g, '* $1');
+
+    // 4. Convert dash bullets to star bullets for consistency
+    cleaned = cleaned.replace(/^- /gm, '* ');
+
+    return cleaned;
+};
+
 const CVPreview = ({ result, printRef }) => {
     return (
         <div className="lg:col-span-7 sticky top-24">
