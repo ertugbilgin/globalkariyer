@@ -49,6 +49,7 @@ function App() {
                 isAiBusy={isAiBusy}
                 progress={progress}
                 loadingText={loadingText}
+                error={error}
                 onAnalyze={handleAnalyze}
               />
             </div>

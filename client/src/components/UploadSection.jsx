@@ -1,7 +1,7 @@
 import React from 'react';
 import { Upload, CheckCircle, Briefcase, ServerCrash, RefreshCw } from 'lucide-react';
 
-const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, progress, loadingText, onAnalyze }) => {
+const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, progress, loadingText, error, onAnalyze }) => {
     if (isAiBusy) {
         return (
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
@@ -45,6 +45,13 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                     <div><p className="text-white font-bold text-lg">{file ? file.name : 'CV Yükle (PDF/Word)'}</p></div>
                 </div>
             </div>
+
+            {error && (
+                <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 flex items-center gap-3 animate-shake">
+                    <div className="bg-red-500/20 p-2 rounded-full"><AlertCircle className="w-5 h-5 text-red-500" /></div>
+                    <p className="text-red-400 text-sm font-medium">{error}</p>
+                </div>
+            )}
 
             <div className="relative space-y-2">
                 <label className="block text-amber-400 text-xs font-bold uppercase tracking-wider ml-1 animate-pulse">📢 İş İlanı (Opsiyonel - Önerilir)</label>
