@@ -20,6 +20,7 @@ function App() {
     isAiBusy,
     progress,
     loadingText,
+    error,
     handleAnalyze
   } = useAnalyze();
 
