@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, ArrowRight, TrendingUp, BarChart3, CheckSquare, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Upload, ArrowRight, TrendingUp, BarChart3, CheckSquare, CheckCircle, AlertCircle, Info, Coffee } from 'lucide-react';
 
 const SkillBar = ({ label, score, color }) => {
     const safeScore = Number(score) || 0;
@@ -84,6 +84,32 @@ const AnalysisDashboard = ({ result, onReset }) => {
                     </div>
                 </div>
             )}
+
+            {/* Support Section */}
+            <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-3xl p-6 border border-slate-700 text-center relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-500 opacity-50"></div>
+                <div className="relative z-10">
+                    <h3 className="text-lg font-bold text-white mb-2 flex items-center justify-center gap-2">
+                        <Coffee className="w-5 h-5 text-amber-400" />
+                        Bu Projeyi Beğendiniz mi?
+                    </h3>
+                    <p className="text-sm text-slate-400 mb-4 max-w-md mx-auto">
+                        GlobalKariyer.ai tamamen ücretsiz ve açık kaynaklı bir projedir. Sunucu masraflarına destek olmak isterseniz bize bir kahve ısmarlayabilirsiniz. ☕
+                    </p>
+                    <a
+                        href="https://www.buymeacoffee.com/ertugbilgin"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-[#FFDD00] hover:bg-[#FFDD00]/90 text-slate-900 font-bold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-yellow-500/20"
+                    >
+                        <Coffee className="w-5 h-5" />
+                        Bana Kahve Ismarla
+                    </a>
+                </div>
+                {/* Decorative background elements */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl group-hover:bg-yellow-500/20 transition-all duration-700"></div>
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-700"></div>
+            </div>
         </div>
     );
 };
