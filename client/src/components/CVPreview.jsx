@@ -28,6 +28,16 @@ const CVPreview = ({ result, printRef }) => {
             <div className="bg-slate-800 rounded-t-xl p-3 border-b border-slate-700 flex items-center justify-between">
                 <span className="text-xs text-slate-400 font-mono flex items-center gap-2"><LayoutTemplate className="w-4 h-4" /> Önizleme</span>
             </div>
+
+            {result.uiSuggestions?.fontReason?.tr && (
+                <div className="bg-blue-900/20 border-x border-blue-500/20 p-3 flex items-start gap-3">
+                    <Wand2 className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
+                    <div className="text-xs text-blue-200">
+                        <span className="font-bold text-blue-400">Font Seçimi ({result.uiSuggestions.selectedFont}):</span> {result.uiSuggestions.fontReason.tr}
+                    </div>
+                </div>
+            )}
+
             <div className="bg-slate-900/50 p-1 md:p-8 rounded-b-xl border border-slate-800 overflow-hidden">
                 {/* Mobile Wrapper: Fixed height, full width, relative positioning */}
                 <div className="relative w-full h-[340px] sm:h-[600px] md:h-auto md:block overflow-hidden md:overflow-visible">
