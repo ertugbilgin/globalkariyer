@@ -60,7 +60,7 @@ function App() {
             )}
           </div>
 
-          {result && result.optimizedCv && !isAiBusy && (
+          {result && typeof result.optimizedCv === 'string' && !isAiBusy && (
             <CVPreview
               result={result}
               printRef={printRef}
