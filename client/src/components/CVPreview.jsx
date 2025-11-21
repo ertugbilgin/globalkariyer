@@ -52,13 +52,19 @@ const CVPreview = ({ result, printRef }) => {
                         bg-white text-slate-900 w-[210mm] min-h-[297mm] p-[20mm] shadow-2xl mb-10"
                         style={{ fontFamily: getFontFamily(result.uiSuggestions?.selectedFont), lineHeight: '1.5' }}>
 
-                        <div className="border-b-2 border-slate-900 pb-6 mb-6">
-                            <h1 className="text-4xl font-black uppercase tracking-wide text-slate-900">{result.contactInfo?.name || 'İsim'}</h1>
-                            <div className="text-sm text-slate-600 mt-3 flex flex-wrap gap-x-6 gap-y-2 font-medium">
-                                {result.contactInfo?.location && <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.location}</span>}
-                                {result.contactInfo?.email && <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.email}</span>}
-                                {result.contactInfo?.phone && <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.phone}</span>}
-                                {result.contactInfo?.linkedin && <span className="flex items-center gap-1.5"><Linkedin className="w-3.5 h-3.5 text-blue-600" /> LinkedIn</span>}
+                        <div className="border-b-2 border-slate-900 pb-6 mb-6 text-center">
+                            <h1 className="text-4xl font-black uppercase tracking-wide text-slate-900 mb-2">{result.contactInfo?.name || 'İsim'}</h1>
+                            <div className="text-sm text-slate-600 flex flex-wrap justify-center gap-2 font-medium">
+                                {result.contactInfo?.location && <span>{result.contactInfo.location}</span>}
+                                {result.contactInfo?.location && (result.contactInfo?.email || result.contactInfo?.phone || result.contactInfo?.linkedin) && <span className="text-slate-400">|</span>}
+
+                                {result.contactInfo?.email && <span>{result.contactInfo.email}</span>}
+                                {result.contactInfo?.email && (result.contactInfo?.phone || result.contactInfo?.linkedin) && <span className="text-slate-400">|</span>}
+
+                                {result.contactInfo?.phone && <span>{result.contactInfo.phone}</span>}
+                                {result.contactInfo?.phone && result.contactInfo?.linkedin && <span className="text-slate-400">|</span>}
+
+                                {result.contactInfo?.linkedin && <span className="text-blue-700">LinkedIn</span>}
                             </div>
                         </div>
                         <div className="prose prose-slate max-w-none 

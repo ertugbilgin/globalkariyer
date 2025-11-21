@@ -17,7 +17,7 @@ export const generateWordDoc = (result) => {
     if (result.contactInfo?.email) contactParts.push(new TextRun({ text: `${result.contactInfo.email} | `, font: fontName, size: 20, color: "666666" }));
     if (result.contactInfo?.phone) contactParts.push(new TextRun({ text: `${result.contactInfo.phone} | `, font: fontName, size: 20, color: "666666" }));
     if (result.contactInfo?.linkedin) {
-        contactParts.push(new ExternalHyperlink({ children: [new TextRun({ text: "LinkedIn Profile", style: "Hyperlink", font: fontName, size: 20, color: themeColor })], link: result.contactInfo.linkedin }));
+        contactParts.push(new ExternalHyperlink({ children: [new TextRun({ text: "LinkedIn", style: "Hyperlink", font: fontName, size: 20, color: themeColor })], link: result.contactInfo.linkedin }));
     }
     docChildren.push(new Paragraph({ children: contactParts, alignment: AlignmentType.CENTER, spacing: { after: 300 } }));
 
