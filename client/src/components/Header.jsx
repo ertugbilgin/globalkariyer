@@ -19,7 +19,7 @@ const Header = ({ result, onDownload }) => {
                 </div>
                 {result && (
                     <button onClick={onDownload} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 hover:scale-105 text-sm whitespace-nowrap">
-                        <FileText className="w-4 h-4" /> <span className="hidden sm:inline">Word İndir (.docx)</span><span className="sm:hidden">İndir</span>
+                        <FileText className="w-4 h-4" /> <span className="hidden sm:inline">CV İndir (.docx)</span><span className="sm:hidden">İndir</span>
                     </button>
                 )}
             </div>

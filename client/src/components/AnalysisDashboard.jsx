@@ -40,7 +40,7 @@ const AnalysisDashboard = ({ result, onReset }) => {
                     <TrendingUp className="w-6 h-6 text-emerald-400 shrink-0" />
                     <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-bold text-emerald-400 mb-1">Mülakat Şansınız: {result.scores?.interviewRate || "Yüksek"} 🚀</h4>
-                        <p className="text-xs text-emerald-200/80 leading-relaxed break-words">Sağ taraftaki optimize edilmiş CV ile şansınızı artırın.</p>
+                        <p className="text-xs text-emerald-200/80 leading-relaxed break-words">"CV İndir" butonu ile optimize edilmiş CV'nizi indirip şansınızı artırın.</p>
                     </div>
                 </div>
 
