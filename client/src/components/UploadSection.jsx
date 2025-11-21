@@ -46,18 +46,25 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                 </div>
             </div>
 
-            <div className="relative">
-                <div className="absolute top-3 left-3 text-slate-500"><Briefcase className="w-4 h-4" /></div>
-                <textarea
-                    className="w-full h-32 bg-slate-950 border border-slate-800 rounded-xl p-3 pl-10 text-sm text-slate-300 focus:ring-1 focus:ring-blue-500 outline-none resize-none"
-                    placeholder="İş Tanımı (Job Description)... Buraya başvurmak istediğiniz ilanı yapıştırırsanız, yapay zeka CV'nizi o ilana özel olarak optimize eder."
-                    value={jobDesc}
-                    onChange={(e) => setJobDesc(e.target.value)}
-                />
+            <div className="relative space-y-2">
+                <label className="block text-amber-400 text-xs font-bold uppercase tracking-wider ml-1 animate-pulse">📢 İş İlanı (Opsiyonel - Önerilir)</label>
+                <div className="relative group">
+                    <div className="absolute top-3 left-3 text-slate-500 group-focus-within:text-amber-500 transition-colors"><Briefcase className="w-4 h-4" /></div>
+                    <textarea
+                        className="w-full h-32 bg-slate-900 border-2 border-slate-700 rounded-xl p-3 pl-10 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 outline-none resize-none transition-all shadow-lg"
+                        placeholder="Başvurmak istediğiniz iş ilanının metnini buraya yapıştırın. Yapay zeka, CV'nizi bu ilandaki anahtar kelimelere göre optimize edecektir."
+                        value={jobDesc}
+                        onChange={(e) => setJobDesc(e.target.value)}
+                    />
+                </div>
             </div>
             <button onClick={onAnalyze} disabled={loading || !file} className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}>
                 CV'mi Analiz Et ve İyileştir ✨
             </button>
+            <p className="text-center text-[10px] text-slate-500 flex items-center justify-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                Gizliliğiniz bizim için önemli. CV'niz sunucularımızda saklanmaz.
+            </p>
         </div>
     );
 };

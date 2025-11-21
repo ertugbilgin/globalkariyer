@@ -23,7 +23,6 @@ function App() {
     handleAnalyze
   } = useAnalyze();
 
-  const [showHighlights, setShowHighlights] = useState(true);
   const printRef = useRef(null);
 
   const handlePrint = useReactToPrint({
@@ -35,7 +34,7 @@ function App() {
     <div className="min-h-screen bg-[#0f172a] text-slate-100 font-sans selection:bg-blue-500/30">
       <Header result={result} onDownload={() => generateWordDoc(result)} />
 
-      <main className="max-w-[1600px] mx-auto p-6 lg:p-8">
+      <main className="max-w-[1600px] mx-auto p-2 md:p-4 lg:p-8 overflow-x-hidden">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className={`lg:col-span-5 space-y-6 ${result ? '' : 'lg:col-start-4 lg:col-span-6'}`}>
             {!result && !loading && !isAiBusy && <HeroSection />}
@@ -62,8 +61,6 @@ function App() {
           {result && result.optimizedCv && !isAiBusy && (
             <CVPreview
               result={result}
-              showHighlights={showHighlights}
-              setShowHighlights={setShowHighlights}
               printRef={printRef}
             />
           )}

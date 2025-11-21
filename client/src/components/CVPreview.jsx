@@ -22,16 +22,17 @@ const getFontFamily = (fontName) => {
     return "'Inter', sans-serif";
 };
 
-const CVPreview = ({ result, showHighlights, setShowHighlights, printRef }) => {
+const CVPreview = ({ result, printRef }) => {
     return (
         <div className="lg:col-span-7 sticky top-24">
             <div className="bg-slate-800 rounded-t-xl p-3 border-b border-slate-700 flex items-center justify-between">
                 <span className="text-xs text-slate-400 font-mono flex items-center gap-2"><LayoutTemplate className="w-4 h-4" /> Önizleme</span>
-                <button onClick={() => setShowHighlights(!showHighlights)} className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all ${showHighlights ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' : 'bg-slate-700 text-slate-400'}`}>{showHighlights ? 'Değişiklikleri Göster' : 'Gizle'}</button>
             </div>
-            <div className="bg-slate-900/50 p-4 md:p-8 rounded-b-xl border border-slate-800 overflow-hidden">
-                <div className="overflow-auto max-h-[85vh] custom-scrollbar shadow-2xl">
-                    <div ref={printRef} className="bg-white text-slate-900 w-[210mm] min-h-[297mm] mx-auto p-[20mm] shadow-xl origin-top transform scale-[0.95] md:scale-100" style={{ fontFamily: getFontFamily(result.uiSuggestions?.selectedFont), lineHeight: '1.5' }}>
+            <div className="bg-slate-900/50 p-1 md:p-8 rounded-b-xl border border-slate-800 overflow-hidden">
+                {/* Mobile Wrapper: Fixed height, full width, relative positioning */}
+                <div className="relative w-full h-[340px] sm:h-[600px] md:h-auto md:block overflow-hidden md:overflow-visible">
+                    {/* CV Container: Absolute on mobile to prevent layout expansion, Static on desktop */}
+                    <div ref={printRef} className="absolute top-0 left-1/2 -translate-x-1/2 md:static md:translate-x-0 bg-white text-slate-900 w-[210mm] min-h-[297mm] p-[20mm] shadow-xl origin-top transform scale-[0.4] sm:scale-[0.7] md:scale-100" style={{ fontFamily: getFontFamily(result.uiSuggestions?.selectedFont), lineHeight: '1.5' }}>
                         <div className="border-b-2 border-slate-900 pb-6 mb-6">
                             <h1 className="text-4xl font-black uppercase tracking-wide text-slate-900">{result.contactInfo?.name || 'İsim'}</h1>
                             <div className="text-sm text-slate-600 mt-3 flex flex-wrap gap-x-6 gap-y-2 font-medium">

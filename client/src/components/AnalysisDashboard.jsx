@@ -29,22 +29,22 @@ const AnalysisDashboard = ({ result, onReset }) => {
         <div className="space-y-6 animate-fade-in">
             <button onClick={onReset} className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 border border-slate-700"><Upload className="w-4 h-4" /> Yeni Analiz</button>
 
-            <div className="bg-slate-800/60 rounded-3xl p-6 border border-slate-700">
-                <div className="flex items-center justify-between gap-4 mb-6">
-                    <div className="flex flex-col items-center"><div className="relative w-16 h-16 flex items-center justify-center rounded-full border-4 border-slate-600 bg-slate-800"><span className="text-xl font-bold text-slate-400">{currentScore}</span></div><span className="text-[10px] uppercase font-bold text-slate-500 mt-2">Mevcut</span></div>
-                    <ArrowRight className="w-6 h-6 text-slate-600" />
-                    <div className="flex flex-col items-center"><div className="relative w-20 h-20 flex items-center justify-center rounded-full border-4 border-emerald-500 bg-slate-800 shadow-lg shadow-emerald-500/20"><span className="text-3xl font-black text-white">{potentialScore}</span></div><span className="text-[10px] uppercase font-bold text-emerald-400 mt-2">Potansiyel</span></div>
+            <div className="bg-slate-800/60 rounded-3xl p-4 md:p-6 border border-slate-700">
+                <div className="flex items-center justify-between gap-2 md:gap-4 mb-6">
+                    <div className="flex flex-col items-center"><div className="relative w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full border-4 border-slate-600 bg-slate-800"><span className="text-lg md:text-xl font-bold text-slate-400">{currentScore}</span></div><span className="text-[10px] uppercase font-bold text-slate-500 mt-2">Mevcut</span></div>
+                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-slate-600" />
+                    <div className="flex flex-col items-center"><div className="relative w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-full border-4 border-emerald-500 bg-slate-800 shadow-lg shadow-emerald-500/20"><span className="text-2xl md:text-3xl font-black text-white">{potentialScore}</span></div><span className="text-[10px] uppercase font-bold text-emerald-400 mt-2">Potansiyel</span></div>
                 </div>
 
                 <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4 flex gap-3 mb-6">
                     <TrendingUp className="w-6 h-6 text-emerald-400 shrink-0" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-bold text-emerald-400 mb-1">Mülakat Şansınız: {result.scores?.interviewRate || "Yüksek"} 🚀</h4>
-                        <p className="text-xs text-emerald-200/80 leading-relaxed">Sağ taraftaki optimize edilmiş CV ile şansınızı artırın.</p>
+                        <p className="text-xs text-emerald-200/80 leading-relaxed break-words">Sağ taraftaki optimize edilmiş CV ile şansınızı artırın.</p>
                     </div>
                 </div>
 
-                <div className="space-y-4 mb-6 bg-slate-900/40 p-5 rounded-xl border border-slate-700/50">
+                <div className="space-y-4 mb-6 bg-slate-900/40 p-4 md:p-5 rounded-xl border border-slate-700/50">
                     <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-4"><BarChart3 className="w-3 h-3" /> ATS Detay Analizi</h4>
                     <SkillBar label="Bulunabilirlik (Searchability)" score={result.scores?.breakdown?.searchability} color="text-blue-400" />
                     <SkillBar label="Teknik Yetkinlik (Hard Skills)" score={result.scores?.breakdown?.hardSkills} color="text-purple-400" />
@@ -52,19 +52,19 @@ const AnalysisDashboard = ({ result, onReset }) => {
                     <SkillBar label="ATS Formatı (Formatting)" score={result.scores?.breakdown?.formatting} color="text-emerald-400" />
                 </div>
 
-                <div className="bg-slate-900/50 p-4 rounded-xl border-l-4 border-blue-500 text-sm text-slate-300 mb-2">
+                <div className="bg-slate-900/50 p-4 rounded-xl border-l-4 border-blue-500 text-sm text-slate-300 mb-2 overflow-hidden">
                     <strong className="block mb-1 text-blue-400 text-xs uppercase tracking-wider font-bold">Analiz Raporu</strong>
-                    {result.summary?.tr}
-                    <div className="mt-3 pt-3 border-t border-slate-700"><strong className="block mb-1 text-emerald-400 text-xs uppercase tracking-wider font-bold">🚀 Yapılan İyileştirmeler</strong><ul className="space-y-1">{result.summary?.improvements?.map((imp, i) => (<li key={i} className="flex items-start gap-2 text-xs text-slate-400"><span className="text-emerald-500 mt-0.5">•</span> {imp}</li>))}</ul></div>
+                    <div className="break-words whitespace-pre-wrap text-xs md:text-sm">{result.summary?.tr}</div>
+                    <div className="mt-3 pt-3 border-t border-slate-700"><strong className="block mb-1 text-emerald-400 text-xs uppercase tracking-wider font-bold">🚀 Yapılan İyileştirmeler</strong><ul className="space-y-1">{result.summary?.improvements?.map((imp, i) => (<li key={i} className="flex items-start gap-2 text-xs text-slate-400"><span className="text-emerald-500 mt-0.5 shrink-0">•</span> <span className="flex-1 min-w-0 break-words">{imp}</span></li>))}</ul></div>
                 </div>
             </div>
 
             {result.atsModifications && (
-                <div className="bg-slate-800/40 border border-slate-700 rounded-3xl p-6">
+                <div className="bg-slate-800/40 border border-slate-700 rounded-3xl p-4 md:p-6">
                     <h3 className="text-sm font-bold text-slate-300 uppercase flex items-center gap-2 mb-4"><CheckSquare className="w-4 h-4" /> ATS Format Kontrolü</h3>
                     <ul className="space-y-2">
                         {result.atsModifications.map((item, i) => (
-                            <li key={i} className="flex gap-3 items-start p-2 rounded-lg hover:bg-slate-800/50 transition-colors"><CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /><div><p className="text-xs text-slate-300">{item.detail || item.action}</p></div></li>
+                            <li key={i} className="flex gap-3 items-start p-2 rounded-lg hover:bg-slate-800/50 transition-colors"><CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /><div className="flex-1 min-w-0"><p className="text-xs text-slate-300 break-words">{item.detail || item.action}</p></div></li>
                         ))}
                     </ul>
                 </div>

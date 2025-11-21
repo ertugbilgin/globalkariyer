@@ -15,7 +15,10 @@ export const useAnalyze = () => {
         if (loading) {
             const interval = setInterval(() => {
                 setProgress((prev) => {
-                    if (prev >= 90) return 90;
+                    if (prev >= 90) {
+                        setLoadingText("Son dokunuşlar yapılıyor... (Bu işlem biraz zaman alabilir)");
+                        return 90;
+                    }
                     if (prev < 30) setLoadingText("CV Taranıyor ve Ayrıştırılıyor...");
                     else if (prev < 60) setLoadingText("ATS Uyumluluk Analizi Yapılıyor...");
                     else if (prev < 80) setLoadingText("Anahtar Kelimeler ve Eksikler Belirleniyor...");
