@@ -76,7 +76,28 @@ const CVPreview = ({ result, printRef }) => {
                             prose-ul:list-disc prose-ul:pl-5 prose-ul:my-2 prose-ul:list-outside
                             prose-li:text-sm prose-li:marker:text-blue-600 prose-li:pl-1 prose-li:my-0.5 
                             prose-strong:font-bold prose-strong:text-slate-900">
-                            <ReactMarkdown rehypePlugins={[rehypeRaw]} components={components}>{result.optimizedCv}</ReactMarkdown>
+const cleanMarkdown = (markdown) => {
+    if (!markdown) return '';
+                            let cleaned = markdown;
+
+                            // 1. Ensure newlines before headers
+                            cleaned = cleaned.replace(/([^\n])(## )/g, '$1\n\n$2');
+
+                            // 2. Ensure newlines before list items
+                            cleaned = cleaned.replace(/([^\n])(\* )/g, '$1\n$2');
+
+                            // 3. Fix missing spaces after bullets (*Item -> * Item)
+                            cleaned = cleaned.replace(/\*([^\s])/g, '* $1');
+
+                            // 4. Convert dash bullets to star bullets for consistency
+                            cleaned = cleaned.replace(/^- /gm, '* ');
+
+                            return cleaned;
+};
+
+                            const CVPreview = ({result, printRef}) => {
+                                // ... existing code ...
+                                <ReactMarkdown rehypePlugins={[rehypeRaw]} components={components}>{cleanMarkdown(result.optimizedCv)}</ReactMarkdown>
                         </div>
                     </div>
                 </div>
