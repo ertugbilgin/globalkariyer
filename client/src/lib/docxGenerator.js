@@ -7,16 +7,17 @@ export const generateWordDoc = (result) => {
     trackEvent(ANALYTICS_EVENTS.DOWNLOAD_WORD);
     const lines = result.optimizedCv.split('\n');
     const docChildren = [];
-    const fontName = "Arial"; // Word için en güvenli font
+    const fontName = result.uiSuggestions?.selectedFont || "Arial";
+    const themeColor = "2E74B5"; // Word Blue
 
-    docChildren.push(new Paragraph({ children: [new TextRun({ text: result.contactInfo?.name || "Name", bold: true, font: fontName, size: 32 })], alignment: AlignmentType.CENTER, spacing: { after: 100 } }));
+    docChildren.push(new Paragraph({ children: [new TextRun({ text: result.contactInfo?.name || "Name", bold: true, font: fontName, size: 32, color: "000000" })], alignment: AlignmentType.CENTER, spacing: { after: 100 } }));
 
     const contactParts = [];
-    if (result.contactInfo?.location) contactParts.push(new TextRun({ text: `${result.contactInfo.location} | `, font: fontName, size: 20 }));
-    if (result.contactInfo?.email) contactParts.push(new TextRun({ text: `${result.contactInfo.email} | `, font: fontName, size: 20 }));
-    if (result.contactInfo?.phone) contactParts.push(new TextRun({ text: `${result.contactInfo.phone} | `, font: fontName, size: 20 }));
+    if (result.contactInfo?.location) contactParts.push(new TextRun({ text: `${result.contactInfo.location} | `, font: fontName, size: 20, color: "666666" }));
+    if (result.contactInfo?.email) contactParts.push(new TextRun({ text: `${result.contactInfo.email} | `, font: fontName, size: 20, color: "666666" }));
+    if (result.contactInfo?.phone) contactParts.push(new TextRun({ text: `${result.contactInfo.phone} | `, font: fontName, size: 20, color: "666666" }));
     if (result.contactInfo?.linkedin) {
-        contactParts.push(new ExternalHyperlink({ children: [new TextRun({ text: "LinkedIn Profile", style: "Hyperlink", font: fontName, size: 20 })], link: result.contactInfo.linkedin }));
+        contactParts.push(new ExternalHyperlink({ children: [new TextRun({ text: "LinkedIn Profile", style: "Hyperlink", font: fontName, size: 20, color: themeColor })], link: result.contactInfo.linkedin }));
     }
     docChildren.push(new Paragraph({ children: contactParts, alignment: AlignmentType.CENTER, spacing: { after: 300 } }));
 
@@ -26,10 +27,10 @@ export const generateWordDoc = (result) => {
 
         if (cleanLine.startsWith('## ')) {
             docChildren.push(new Paragraph({
-                children: [new TextRun({ text: cleanLine.replace('## ', '').toUpperCase(), bold: true, font: fontName, size: 24 })],
+                children: [new TextRun({ text: cleanLine.replace('## ', '').toUpperCase(), bold: true, font: fontName, size: 24, color: themeColor })],
                 heading: HeadingLevel.HEADING_2,
                 spacing: { before: 240, after: 120 },
-                border: { bottom: { color: "000000", space: 1, value: "single", size: 6 } }
+                border: { bottom: { color: themeColor, space: 1, value: "single", size: 6 } }
             }));
         } else if (cleanLine.startsWith('### ')) {
             docChildren.push(new Paragraph({
