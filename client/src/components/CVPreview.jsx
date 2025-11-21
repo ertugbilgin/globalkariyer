@@ -39,8 +39,8 @@ const CVPreview = ({ result, printRef }) => {
             )}
 
             <div className="bg-slate-900/50 p-1 md:p-8 rounded-b-xl border border-slate-800 overflow-hidden">
-                {/* Mobile Wrapper: Fixed height, full width, relative positioning */}
-                <div className="relative w-full h-[340px] sm:h-[600px] md:h-[800px] lg:h-[1000px] overflow-hidden md:overflow-y-auto custom-scrollbar">
+                {/* Mobile Wrapper: Scrollable container for all screens */}
+                <div className="relative w-full h-[500px] sm:h-[600px] md:h-[800px] lg:h-[1000px] overflow-y-auto custom-scrollbar bg-slate-900/50">
                     {/* CV Container: Scaled to fit different screens */}
                     <div ref={printRef} className="absolute top-0 left-1/2 -translate-x-1/2 origin-top transform transition-transform duration-300
                         scale-[0.4] 
@@ -49,7 +49,7 @@ const CVPreview = ({ result, printRef }) => {
                         lg:scale-[0.8] 
                         xl:scale-[0.9] 
                         2xl:scale-100
-                        bg-white text-slate-900 w-[210mm] min-h-[297mm] p-[20mm] shadow-2xl"
+                        bg-white text-slate-900 w-[210mm] min-h-[297mm] p-[20mm] shadow-2xl mb-10"
                         style={{ fontFamily: getFontFamily(result.uiSuggestions?.selectedFont), lineHeight: '1.5' }}>
 
                         <div className="border-b-2 border-slate-900 pb-6 mb-6">
@@ -67,7 +67,7 @@ const CVPreview = ({ result, printRef }) => {
                             prose-h3:text-slate-800 prose-h3:mt-4 prose-h3:mb-2 prose-h3:text-base
                             prose-h4:text-slate-700 prose-h4:italic prose-h4:text-sm
                             prose-p:text-sm prose-p:leading-relaxed prose-p:my-2 prose-p:text-slate-700 text-justify 
-                            prose-ul:list-disc prose-ul:pl-5 prose-ul:my-2 
+                            prose-ul:list-disc prose-ul:pl-5 prose-ul:my-2 prose-ul:list-outside
                             prose-li:text-sm prose-li:marker:text-blue-600 prose-li:pl-1 prose-li:my-0.5 
                             prose-strong:font-bold prose-strong:text-slate-900">
                             <ReactMarkdown rehypePlugins={[rehypeRaw]} components={components}>{result.optimizedCv}</ReactMarkdown>
