@@ -46,13 +46,20 @@ const CVPreview = ({ result, printRef }) => {
                         <div className="border-b-2 border-slate-900 pb-6 mb-6">
                             <h1 className="text-4xl font-black uppercase tracking-wide text-slate-900">{result.contactInfo?.name || 'İsim'}</h1>
                             <div className="text-sm text-slate-600 mt-3 flex flex-wrap gap-x-6 gap-y-2 font-medium">
-                                {result.contactInfo?.location && <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-slate-400" /> {result.contactInfo.location}</span>}
-                                {result.contactInfo?.email && <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-slate-400" /> {result.contactInfo.email}</span>}
-                                {result.contactInfo?.phone && <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-slate-400" /> {result.contactInfo.phone}</span>}
-                                {result.contactInfo?.linkedin && <span className="flex items-center gap-1.5"><Linkedin className="w-3.5 h-3.5 text-slate-400" /> LinkedIn</span>}
+                                {result.contactInfo?.location && <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.location}</span>}
+                                {result.contactInfo?.email && <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.email}</span>}
+                                {result.contactInfo?.phone && <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-blue-600" /> {result.contactInfo.phone}</span>}
+                                {result.contactInfo?.linkedin && <span className="flex items-center gap-1.5"><Linkedin className="w-3.5 h-3.5 text-blue-600" /> LinkedIn</span>}
                             </div>
                         </div>
-                        <div className="prose prose-slate max-w-none prose-headings:uppercase prose-headings:font-bold prose-headings:text-slate-900 prose-headings:border-b prose-headings:border-slate-300 prose-headings:pb-1 prose-headings:mt-6 prose-headings:mb-3 prose-headings:text-sm prose-p:text-sm prose-p:leading-relaxed prose-p:my-2 text-justify prose-li:text-sm prose-li:marker:text-slate-900 prose-ul:my-2 prose-li:my-0.5 prose-strong:font-bold prose-strong:text-slate-900">
+                        <div className="prose prose-slate max-w-none 
+                            prose-headings:uppercase prose-headings:font-bold prose-headings:text-blue-700 
+                            prose-h2:border-b prose-h2:border-blue-200 prose-h2:pb-1 prose-h2:mt-6 prose-h2:mb-3 prose-h2:text-lg
+                            prose-h3:text-slate-800 prose-h3:mt-4 prose-h3:mb-2 prose-h3:text-base
+                            prose-h4:text-slate-700 prose-h4:italic prose-h4:text-sm
+                            prose-p:text-sm prose-p:leading-relaxed prose-p:my-2 prose-p:text-slate-700 text-justify 
+                            prose-li:text-sm prose-li:marker:text-blue-600 prose-ul:my-2 prose-li:my-0.5 
+                            prose-strong:font-bold prose-strong:text-slate-900">
                             <ReactMarkdown rehypePlugins={[rehypeRaw]} components={components}>{result.optimizedCv}</ReactMarkdown>
                         </div>
                     </div>
