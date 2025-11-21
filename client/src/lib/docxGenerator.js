@@ -31,6 +31,18 @@ export const generateWordDoc = (result) => {
                 spacing: { before: 240, after: 120 },
                 border: { bottom: { color: "000000", space: 1, value: "single", size: 6 } }
             }));
+        } else if (cleanLine.startsWith('### ')) {
+            docChildren.push(new Paragraph({
+                children: [new TextRun({ text: cleanLine.replace('### ', ''), bold: true, font: fontName, size: 22 })],
+                heading: HeadingLevel.HEADING_3,
+                spacing: { before: 200, after: 100 }
+            }));
+        } else if (cleanLine.startsWith('#### ')) {
+            docChildren.push(new Paragraph({
+                children: [new TextRun({ text: cleanLine.replace('#### ', ''), bold: true, font: fontName, size: 20, italics: true })],
+                heading: HeadingLevel.HEADING_4,
+                spacing: { before: 160, after: 80 }
+            }));
         } else {
             // Bullet point kontrolü: Hem '* ' hem de '- ' ile başlayanları yakala
             const isBullet = cleanLine.startsWith('* ') || cleanLine.startsWith('- ') || cleanLine.startsWith('• ');
