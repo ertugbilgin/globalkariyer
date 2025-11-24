@@ -21,6 +21,7 @@ function App() {
     progress,
     loadingText,
     error,
+    clearError,
     handleAnalyze
   } = useAnalyze();
 
@@ -51,6 +52,7 @@ function App() {
                 progress={progress}
                 loadingText={loadingText}
                 error={error}
+                onClearError={clearError}
                 onAnalyze={handleAnalyze}
               />
             </div>

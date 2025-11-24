@@ -103,7 +103,7 @@ export const useAnalyze = () => {
             setTimeout(() => setResult(data), 500);
         } catch (err) {
             trackEvent(ANALYTICS_EVENTS.ANALYSIS_FAIL, { error: err.message });
-            setError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.");
+            setError(err.message || "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.");
         } finally {
             if (!currentBusyState) setTimeout(() => setLoading(false), 500);
         }
@@ -121,6 +121,11 @@ export const useAnalyze = () => {
         isAiBusy,
         progress,
         loadingText,
-        handleAnalyze
+        loadingText,
+        handleAnalyze,
+        clearError: () => {
+            setError(null);
+            setFile(null);
+        }
     };
 };
