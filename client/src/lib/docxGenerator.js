@@ -1,5 +1,4 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ExternalHyperlink } from 'docx'
-import { saveAs } from 'file-saver'
 import { trackEvent, ANALYTICS_EVENTS } from './analytics';
 
 export const generateWordDoc = (result) => {
@@ -74,5 +73,30 @@ export const generateWordDoc = (result) => {
     });
 
     const doc = new Document({ sections: [{ children: docChildren }], styles: { default: { document: { run: { font: fontName } } } } });
-    Packer.toBlob(doc).then((blob) => saveAs(blob, `${result.contactInfo?.name?.replace(/\s+/g, '_')}_Optimized.docx`));
+
+    Packer.toBlob(doc).then((blob) => {
+        // Create a new Blob with the correct MIME type
+        const mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        const newBlob = new Blob([blob], { type: mimeType });
+
+        // Sanitize filename
+        const safeName = (result.contactInfo?.name || "CV").replace(/[^a-zA-Z0-9-_]/g, '_');
+        const fileName = `${safeName}_Optimized.docx`;
+
+        // Native download method (more robust on mobile)
+        const url = window.URL.createObjectURL(newBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.target = "_blank"; // Helps with some mobile browsers
+        link.rel = "noopener";
+
+        document.body.appendChild(link);
+        link.click();
+
+        setTimeout(() => {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }, 100);
+    });
 };
