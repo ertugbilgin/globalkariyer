@@ -7,7 +7,7 @@ const { analyzeCV } = require('./controllers/analyzeController.cjs');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-const port = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5001;
 const upload = multer({ storage: multer.memoryStorage() });
 
 // Render/Vercel gibi proxy arkasında çalışırken IP adreslerini doğru almak için gerekli
