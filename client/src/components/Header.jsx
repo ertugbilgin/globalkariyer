@@ -1,7 +1,14 @@
-import React from 'react';
-import { Globe, FileText } from 'lucide-react';
+import { isInAppBrowser } from '../lib/inAppBrowser';
 
 const Header = ({ result, onDownload }) => {
+    const handleDownloadClick = () => {
+        if (isInAppBrowser()) {
+            alert("⚠️ LinkedIn/Instagram tarayıcısı dosya indirmeyi engelleyebilir.\n\nLütfen sağ üstteki '...' menüsünden 'Tarayıcıda Aç' (Open in Browser) seçeneğini kullanın.");
+            return;
+        }
+        onDownload();
+    };
+
     return (
         <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
             <div className="max-w-[1600px] mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
@@ -18,7 +25,7 @@ const Header = ({ result, onDownload }) => {
                     </div>
                 </div>
                 {result && (
-                    <button onClick={onDownload} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 hover:scale-105 text-sm whitespace-nowrap">
+                    <button onClick={handleDownloadClick} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 hover:scale-105 text-sm whitespace-nowrap">
                         <FileText className="w-4 h-4" /> <span className="hidden sm:inline">CV İndir (.docx)</span><span className="sm:hidden">İndir</span>
                     </button>
                 )}
