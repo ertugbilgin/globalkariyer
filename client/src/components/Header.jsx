@@ -1,3 +1,4 @@
+import { Globe, FileText } from 'lucide-react';
 import { isInAppBrowser } from '../lib/inAppBrowser';
 
 const Header = ({ result, onDownload }) => {
