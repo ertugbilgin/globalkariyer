@@ -34,3 +34,5 @@ app.post('/analyze', upload.any(), analyzeCV);
 app.listen(PORT, () => {
   console.log(`\n🚀 MOTOR v52.0(STRICT MODE) ÇALIŞIYOR! Port: ${PORT}`);
 });
+
+// Force deploy: 2025-11-25 12:22
