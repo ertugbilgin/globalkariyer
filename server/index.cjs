@@ -7,9 +7,13 @@ const { analyzeCV } = require('./controllers/analyzeController.cjs');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const port = process.env.PORT || 5001;
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Render/Vercel gibi proxy arkasında çalışırken IP adreslerini doğru almak için gerekli
+app.set('trust proxy', 1);
+
+// Rate Limiting (Güvenlik Duvarı)
 // Rate Limiting: 10 requests per minute per IP
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
