@@ -1,38 +1,201 @@
-import { Globe, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, Download, Menu, X, Globe, Wand2, MessageCircleQuestion, RotateCcw } from "lucide-react";
 import { isInAppBrowser } from '../lib/inAppBrowser';
+import { useTranslation } from 'react-i18next';
 
-const Header = ({ result, onDownload }) => {
+const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, onReset }) => {
+    const { t, i18n } = useTranslation();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     const handleDownloadClick = () => {
         if (isInAppBrowser()) {
-            alert("⚠️ LinkedIn/Instagram tarayıcısı dosya indirmeyi engelleyebilir.\n\nLütfen sağ üstteki '...' menüsünden 'Tarayıcıda Aç' (Open in Browser) seçeneğini kullanın.");
+            alert(t('header.browser_alert'));
             return;
         }
         onDownload();
     };
 
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+
     return (
-        <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
-            <div className="max-w-[1600px] mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 shrink-0">
-                        <Globe className="w-6 h-6 text-white" />
+        <header className="sticky top-4 z-50 mb-6 px-2 md:px-0">
+            <div
+                className="
+                    mx-auto flex max-w-6xl items-center justify-between
+                    rounded-2xl border border-slate-800/80
+                    bg-slate-900/70 backdrop-blur-xl
+                    px-3 py-3 md:px-6 md:py-3.5
+                    shadow-[0_12px_40px_rgba(15,23,42,0.9)]
+                "
+            >
+                <div className="flex items-center gap-2 md:gap-3">
+                    <div
+                        className="
+                            flex h-10 w-10 items-center justify-center rounded-2xl 
+                            bg-gradient-to-br from-indigo-500 via-indigo-600 to-sky-500
+                            shadow-[0_0_18px_rgba(79,70,229,0.7)]
+                        "
+                    >
+                        <Globe className="h-5 w-5 text-white" />
                     </div>
-                    <div className="hidden sm:block">
-                        <h1 className="text-xl font-bold text-white tracking-tight">GlobalKariyer<span className="text-blue-400">.ai</span></h1>
-                        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Yurt Dışı Kariyer Asistanı</p>
-                    </div>
-                    <div className="sm:hidden">
-                        <h1 className="text-lg font-bold text-white tracking-tight">GlobalKariyer<span className="text-blue-400">.ai</span></h1>
+                    <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-white tracking-tight">
+                            GoGlobalCV<span className="text-indigo-300">.com</span>
+                        </span>
+                        <span className="hidden md:block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
+                            {t('header.subtitle')}
+                        </span>
                     </div>
                 </div>
-                {result && (
-                    <button onClick={handleDownloadClick} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 hover:scale-105 text-sm whitespace-nowrap">
-                        <FileText className="w-4 h-4" /> <span className="hidden sm:inline">CV İndir (.docx)</span><span className="sm:hidden">İndir</span>
-                    </button>
-                )}
+
+                <div className="flex items-center gap-3">
+                    <div className="hidden md:flex items-center gap-1 rounded-full bg-slate-900/80 px-1 py-0.5 border border-slate-700/70">
+                        <LangChip label="EN" active={i18n.language === 'en'} onClick={() => changeLanguage('en')} />
+                        <LangChip label="CN" active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')} />
+                        <LangChip label="TR" active={i18n.language === 'tr'} onClick={() => changeLanguage('tr')} />
+                    </div>
+
+                    {result && (
+                        <button
+                            onClick={onOpenCoverLetter}
+                            className="
+                                hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                                bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white
+                                border border-slate-700/50 hover:border-slate-600
+                                transition-all text-sm font-medium
+                            "
+                        >
+                            <Wand2 className="h-4 w-4 text-indigo-400" />
+                            {t('cover_letter.create_btn', 'Create Cover Letter')}
+                        </button>
+                    )}
+
+                    {result && (
+                        <button
+                            onClick={onOpenInterviewPrep}
+                            className="
+                                hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                                bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white
+                                border border-slate-700/50 hover:border-slate-600
+                                transition-all text-sm font-medium
+                            "
+                        >
+                            <MessageCircleQuestion className="h-4 w-4 text-sky-400" />
+                            {t('header.interview_prep', 'Interview Prep')}
+                        </button>
+                    )}
+
+                    {result && (
+                        <button
+                            onClick={onReset}
+                            className="
+                                hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                                bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white
+                                border border-slate-700/50 hover:border-slate-600
+                                transition-all text-sm font-medium
+                            "
+                        >
+                            <RotateCcw className="h-4 w-4 text-amber-400" />
+                            {t('dashboard.new_analysis', 'New Analysis')}
+                        </button>
+                    )}
+
+                    {result && (
+                        <button
+                            onClick={handleDownloadClick}
+                            className="
+                                hidden md:inline-flex items-center gap-2 rounded-xl 
+                                bg-indigo-500 px-4 py-2 text-xs font-semibold 
+                                text-white shadow-[0_10px_30px_rgba(79,70,229,0.7)]
+                                hover:bg-indigo-400 hover:-translate-y-0.5
+                                transition-all
+                            "
+                        >
+                            <FileText className="w-4 h-4" />
+                            {t('header.download_cv')}
+                        </button>
+                    )}
+                    {/* Mobile Download Button (Icon only) */}
+                    {result && (
+                        <button
+                            onClick={handleDownloadClick}
+                            className="
+                                md:hidden inline-flex items-center justify-center rounded-xl 
+                                bg-indigo-500 w-9 h-9 text-white shadow-[0_10px_30px_rgba(79,70,229,0.7)]
+                                hover:bg-indigo-400 transition-all
+                            "
+                        >
+                            <FileText className="w-4 h-4" />
+                        </button>
+                    )}
+
+                    {/* Mobile Menu Toggle */}
+                    {result && (
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="md:hidden p-2 text-slate-400 hover:text-white"
+                        >
+                            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
+                    )}
+                </div>
             </div>
+
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && result && (
+                <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4 p-4 rounded-2xl bg-slate-900/95 border border-slate-800 backdrop-blur-xl shadow-2xl space-y-3 animate-fade-in-up z-50">
+                    <div className="flex items-center justify-center gap-1 rounded-full bg-slate-800/50 p-1 border border-slate-700/50 mb-4">
+                        <LangChip label="EN" active={i18n.language === 'en'} onClick={() => changeLanguage('en')} />
+                        <LangChip label="CN" active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')} />
+                        <LangChip label="TR" active={i18n.language === 'tr'} onClick={() => changeLanguage('tr')} />
+                    </div>
+
+                    <button
+                        onClick={() => { onOpenCoverLetter(); setIsMobileMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    >
+                        <Wand2 className="w-5 h-5 text-indigo-400" />
+                        <span className="font-medium">{t('cover_letter.create_btn', 'Create Cover Letter')}</span>
+                    </button>
+
+                    <button
+                        onClick={() => { onOpenInterviewPrep(); setIsMobileMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    >
+                        <MessageCircleQuestion className="w-5 h-5 text-sky-400" />
+                        <span className="font-medium">{t('header.interview_prep', 'Interview Prep')}</span>
+                    </button>
+
+                    <button
+                        onClick={() => { onReset(); setIsMobileMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    >
+                        <RotateCcw className="w-5 h-5 text-amber-400" />
+                        <span className="font-medium">{t('dashboard.new_analysis', 'New Analysis')}</span>
+                    </button>
+
+                </div>
+            )}
         </header>
     );
 };
+
+const LangChip = ({ label, active, onClick }) => (
+    <button
+        onClick={onClick}
+        className={`
+            px-2.5 py-1 text-[10px] font-semibold rounded-full 
+            transition-all
+            ${active
+                ? "bg-slate-100 text-slate-900 shadow-sm"
+                : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/80"
+            }
+        `}
+    >
+        {label}
+    </button>
+);
 
 export default Header;

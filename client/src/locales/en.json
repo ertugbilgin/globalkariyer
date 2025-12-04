@@ -1,0 +1,170 @@
+{
+    "header": {
+        "subtitle": "Global Career Assistant",
+        "download_cv": "Download CV (.docx)",
+        "download": "Download",
+        "interview_prep": "Interview Prep",
+        "browser_alert": "⚠️ LinkedIn/Instagram browser might block downloads.\n\nPlease use 'Open in Browser' from the top right menu."
+    },
+    "landing": {
+        "hero": {
+            "title_part1": "Is Your CV Ready for",
+            "title_part2": "Global Standards?",
+            "subtitle_part1": "Analyze your CV in seconds, discover your ATS Score, and get a",
+            "job_match_score": "Job Match Score",
+            "subtitle_part2": "tailored to your target job posting. Download your fully optimized, professional, global-ready CV.",
+            "cta": "Analyze and Improve My CV ✨",
+            "privacy": "100% privacy. Your documents are never stored."
+        },
+        "steps": {
+            "1": {
+                "title": "🚀 1. Upload Your CV",
+                "desc": "Add your CV in PDF/Word format. The system instantly analyzes <0>ATS compatibility</0>."
+            },
+            "2": {
+                "title": "🎯 2. Paste the Job Description (Optional)",
+                "desc": "If you add a job posting, AI evaluates your CV specifically for that role and gives you a <0>Job Match Score</0>."
+            },
+            "3": {
+                "title": "🤖 3. Get Your Optimized Global CV",
+                "desc": "AI rewrites your CV, adds missing keywords, and creates a sharp, <0>ATS-friendly</0> professional document."
+            }
+        },
+        "jobmatch": {
+            "title": "🎯 New: Job Match Score",
+            "desc": "When you add a job posting, GoGlobalCV.com analyzes your CV specifically for that role and provides:",
+            "item1": {
+                "title": "✔ Job Match Score",
+                "desc": "0–100 match score."
+            },
+            "item2": {
+                "title": "✔ Missing from CV",
+                "desc": "Points missing from your CV but required in the job."
+            },
+            "item3": {
+                "title": "✔ Suggested Keywords",
+                "desc": "Critical keywords to pass ATS filters."
+            }
+        },
+        "trust": {
+            "title": "🔒 Your Privacy Comes First",
+            "desc": "No file storage. No data sharing. Automatically deleted after processing."
+        },
+        "final_cta": {
+            "title": "Ready?",
+            "desc": "Boost your interview chances with a global-standard CV.",
+            "button": "Analyze My CV ✨"
+        }
+    },
+    "hero": {
+        "title_part1": "Is Your CV Ready for",
+        "title_part2": "Global Standards?",
+        "description": "Analyze your CV with AI in seconds, get your ATS score, and rewrite it professionally for international applications."
+    },
+    "dashboard": {
+        "new_analysis": "New Analysis",
+        "current": "Initial CV Score",
+        "potential": "General CV Health",
+        "cv_health_score": "Optimized CV Score",
+        "interview_chance": "Interview Chance:",
+        "interview_chance_desc": "Download your optimized CV to increase your chances.",
+        "ats_analysis": "ATS Detailed Analysis",
+        "searchability": "Searchability",
+        "hard_skills": "Hard Skills",
+        "soft_skills": "Soft Skills",
+        "formatting": "Formatting",
+        "analysis_report": "Analysis Report",
+        "improvements": "Improvements Made",
+        "ats_check": "ATS Format Check",
+        "suggested_keywords": "Suggested Keywords",
+        "example": "Example:",
+        "benefit": "Benefit",
+        "support_title": "Did you like this project?",
+        "support_desc": "GoGlobalCV.com is a free and open-source project. You can buy us a coffee to support server costs. ☕",
+        "buy_coffee": "Buy Me a Coffee",
+        "overview_summary": "High-level assessment",
+        "overview_hint": "Your CV score has increased to this level with our optimizations. Full details below.",
+        "jobfit_title": "Match with this Job",
+        "jobfit_score_label": "Job Match Score",
+        "jobfit_level_label": "Match Level",
+        "jobfit_keyword_rate": "Keyword coverage from the job description",
+        "jobfit_strong": "Strong Matches",
+        "jobfit_missing": "Missing from your CV",
+        "jobfit_nice": "Nice-to-have extras",
+        "jobfit_desc_dynamic": "This score reflects how well your skills and experience align with the job requirements.",
+        "jobfit_cta_title": "Unlock Your Job Match Score",
+        "jobfit_cta_desc": "Add a job description to see how well your CV matches the role and get missing keywords.",
+        "jobfit_cta_button": "Analyze with Job Description",
+        "interview_prep_desc": "Generate personalized interview questions and answers based on your CV and this job description.",
+        "generate_questions": "Generate Questions"
+    },
+    "upload": {
+        "title": "Upload CV (PDF/Word)",
+        "job_desc_label": "JOB DESCRIPTION (OPTIONAL - RECOMMENDED)",
+        "job_desc_placeholder": "Paste the job description here. AI will optimize your CV based on keywords from this ad.",
+        "analyze_button": "Analyze & Improve My CV",
+        "privacy_note": "Your privacy is important to us. Your CV is not stored on our servers.",
+        "analyzing": "Analyzing...",
+        "drag_drop": "Drag & drop or click to upload",
+        "file_selected": "File selected:",
+        "change_file": "Change file"
+    },
+    "loading": {
+        "start": "Starting Analysis...",
+        "step1": "Scanning and Parsing CV...",
+        "step2": "Analyzing ATS Compatibility...",
+        "step3": "Identifying Keywords and Gaps...",
+        "step4": "AI is examining your CV in detail...",
+        "step5": "Calculating ATS compatibility score...",
+        "step6": "Checking English grammar...",
+        "step7": "Scanning sector-specific keywords...",
+        "step8": "Almost done, please do not close the page! 🚀"
+    },
+    "interview_loading": {
+        "step1": "Analyzing your CV experience...",
+        "step2": "Parsing job requirements...",
+        "step3": "Identifying potential interview topics...",
+        "step4": "Generating behavioral questions...",
+        "step5": "Drafting sample answers and tips...",
+        "step6": "Finalizing your prep kit..."
+    },
+    "preview": "Preview",
+    "payment": {
+        "unlock_title": "Unlock Your CV",
+        "description": "Get your ATS-optimized, professionally formatted CV now.",
+        "one_time": "One-time payment",
+        "feature_docx": "Download editable .docx file",
+        "feature_ats": "ATS Optimization applied",
+        "feature_format": "Professional formatting",
+        "processing": "Processing...",
+        "pay_button": "Pay & Download",
+        "secure_note": "Secured by Lemon Squeezy. 100% Money-back guarantee."
+    },
+    "cover_letter": {
+        "title": "Cover Letter Generator",
+        "subtitle": "AI-powered personalized cover letter",
+        "create_btn": "Create Cover Letter",
+        "job_desc_placeholder": "Paste the job description here...",
+        "tone_label": "Tone",
+        "tone_professional": "Professional",
+        "tone_enthusiastic": "Enthusiastic",
+        "tone_confident": "Confident",
+        "generate_btn": "Generate Cover Letter"
+    },
+    "interview_prep": {
+        "title": "Interview Prep Kit",
+        "subtitle": "AI-powered interview questions & answers",
+        "regenerate": "Regenerate"
+    },
+    "common": {
+        "copy": "Copy Text",
+        "copied": "Copied!",
+        "download_docx": "Download DOCX",
+        "regenerate": "Regenerate"
+    },
+    "error": {
+        "system_busy_title": "System Is Currently Busy 🤯",
+        "system_busy_desc": "We are experiencing high traffic on AI services. Please try again in 1 minute.",
+        "try_again": "Try Again"
+    }
+}

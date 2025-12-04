@@ -1,0 +1,5 @@
+John Doe
+Software Engineer
+Experience: 5 years in React and Node.js.
+Skills: JavaScript, Python, AWS.
+Education: BS in Computer Science.

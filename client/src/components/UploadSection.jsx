@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Upload, CheckCircle, Briefcase, ServerCrash, RefreshCw, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, progress, loadingText, error, onAnalyze, onClearError }) => {
+    const { t } = useTranslation();
     const [showHint, setShowHint] = useState(false);
 
     const handleAnalyzeClick = () => {
@@ -20,9 +22,9 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                     <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                         <ServerCrash className="w-8 h-8 text-amber-400" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Sistem Şu An Çok Yoğun 🤯</h3>
-                    <p className="text-slate-300 mb-6 text-sm px-4">Google servislerinde yoğunluk yaşanıyor. Lütfen 1 dakika sonra tekrar deneyin.</p>
-                    <button onClick={onAnalyze} className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold"><RefreshCw className="w-5 h-5 inline mr-2" /> Tekrar Dene</button>
+                    <h3 className="text-2xl font-bold text-white mb-2">{t('error.system_busy_title', 'System Is Currently Busy 🤯')}</h3>
+                    <p className="text-slate-300 mb-6 text-sm px-4">{t('error.system_busy_desc', 'We are experiencing high traffic on AI services. Please try again in 1 minute.')}</p>
+                    <button onClick={onAnalyze} className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold"><RefreshCw className="w-5 h-5 inline mr-2" /> {t('error.try_again', 'Try Again')}</button>
                 </div>
             </div>
         );
@@ -39,14 +41,14 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center font-black text-2xl text-blue-400">{Math.round(progress)}%</div>
                     </div>
-                    <div className="text-slate-300 font-medium animate-pulse">{loadingText}</div>
+                    <div className="text-slate-300 font-medium animate-pulse">{t(loadingText)}</div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 relative overflow-hidden">
+        <div id="upload" className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 relative overflow-hidden">
             {/* Error Overlay */}
             {error && (
                 <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-sm p-6 text-center animate-in fade-in zoom-in duration-300">
@@ -74,19 +76,21 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                         </div>
                         <div>
                             <p className={`font-bold text-lg transition-colors ${showHint ? 'text-red-400' : 'text-white'}`}>
-                                {file ? file.name : showHint ? 'Lütfen Önce Dosya Yükleyin!' : 'CV Yükle (PDF/Word)'}
+                                {file ? file.name : showHint ? 'Lütfen Önce Dosya Yükleyin!' : t('upload.title')}
                             </p>
+                            {file && <p className="text-xs text-emerald-400 mt-1">{t('upload.file_selected')}</p>}
+                            {!file && <p className="text-xs text-slate-500 mt-1">{t('upload.drag_drop')}</p>}
                         </div>
                     </div>
                 </div>
 
                 <div className="relative space-y-2">
-                    <label className="block text-amber-400 text-xs font-bold uppercase tracking-wider ml-1 animate-pulse">📢 İş İlanı (Opsiyonel - Önerilir)</label>
+                    <label className="block text-amber-400 text-xs font-bold uppercase tracking-wider ml-1 animate-pulse">📢 {t('upload.job_desc_label')}</label>
                     <div className="relative group">
                         <div className="absolute top-3 left-3 text-slate-500 group-focus-within:text-amber-500 transition-colors"><Briefcase className="w-4 h-4" /></div>
                         <textarea
                             className="w-full h-32 bg-slate-900 border-2 border-slate-700 rounded-xl p-3 pl-10 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 outline-none resize-none transition-all shadow-lg"
-                            placeholder="Başvurmak istediğiniz iş ilanının metnini buraya yapıştırın. Yapay zeka, CV'nizi bu ilandaki anahtar kelimelere göre optimize edecektir."
+                            placeholder={t('upload.job_desc_placeholder')}
                             value={jobDesc}
                             onChange={(e) => setJobDesc(e.target.value)}
                         />
@@ -97,11 +101,11 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                     disabled={loading}
                     className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white active:scale-95'}`}
                 >
-                    CV'mi Analiz Et ve İyileştir ✨
+                    {t('upload.analyze_button')} ✨
                 </button>
                 <p className="text-center text-[10px] text-slate-500 flex items-center justify-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                    Gizliliğiniz bizim için önemli. CV'niz sunucularımızda saklanmaz.
+                    {t('upload.privacy_note')}
                 </p>
             </div>
         </div>

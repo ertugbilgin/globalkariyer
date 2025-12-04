@@ -1,0 +1,170 @@
+{
+    "header": {
+        "subtitle": "全球职业助手",
+        "download_cv": "下载简历 (.docx)",
+        "download": "下载",
+        "interview_prep": "面试准备",
+        "browser_alert": "⚠️ LinkedIn/Instagram 浏览器可能会阻止下载。\n\n请使用右上角菜单中的“在浏览器中打开”。"
+    },
+    "landing": {
+        "hero": {
+            "title_part1": "您的简历准备好",
+            "title_part2": "符合全球标准了吗？",
+            "subtitle_part1": "几秒钟内分析您的简历，发现您的 ATS 分数，并获得",
+            "job_match_score": "职位匹配分数",
+            "subtitle_part2": "针对您的目标职位量身定制。下载完全优化、专业、符合全球标准的简历。",
+            "cta": "分析并改进我的简历 ✨",
+            "privacy": "100% 隐私。您的文档永远不会被存储。"
+        },
+        "steps": {
+            "1": {
+                "title": "🚀 1. 上传您的简历",
+                "desc": "添加 PDF/Word 格式的简历。系统立即分析 <0>ATS 兼容性</0>。"
+            },
+            "2": {
+                "title": "🎯 2. 粘贴职位描述（可选）",
+                "desc": "如果您添加职位发布，AI 会专门针对该职位评估您的简历，并给您一个 <0>职位匹配分数</0>。"
+            },
+            "3": {
+                "title": "🤖 3. 获取您优化的全球简历",
+                "desc": "AI 重写您的简历，添加缺失的关键字，并创建一个清晰、<0>ATS 友好</0> 的专业文档。"
+            }
+        },
+        "jobmatch": {
+            "title": "🎯 新功能：职位匹配分数",
+            "desc": "当您添加职位发布时，GoGlobalCV.com 会专门针对该职位分析您的简历并提供：",
+            "item1": {
+                "title": "✔ 职位匹配分数",
+                "desc": "0–100 匹配分数。"
+            },
+            "item2": {
+                "title": "✔ 简历缺失",
+                "desc": "简历中缺失但职位要求的要点。"
+            },
+            "item3": {
+                "title": "✔ 建议关键字",
+                "desc": "通过 ATS 过滤器的关键关键字。"
+            }
+        },
+        "trust": {
+            "title": "🔒 您的隐私至上",
+            "desc": "无文件存储。无数据共享。处理后自动删除。"
+        },
+        "final_cta": {
+            "title": "准备好了吗？",
+            "desc": "用符合全球标准的简历提高您的面试机会。",
+            "button": "分析我的简历 ✨"
+        }
+    },
+    "hero": {
+        "title_part1": "您的简历准备好",
+        "title_part2": "符合全球标准了吗？",
+        "description": "几秒钟内用 AI 分析您的简历，获取您的 ATS 分数，并为国际申请专业重写。"
+    },
+    "dashboard": {
+        "new_analysis": "新分析",
+        "current": "初始 CV 分数",
+        "potential": "综合简历健康度",
+        "cv_health_score": "优化后的 CV 分数",
+        "interview_chance": "面试机会：",
+        "interview_chance_desc": "下载优化后的简历以增加机会。",
+        "ats_analysis": "ATS 详细分析",
+        "searchability": "可搜索性",
+        "hard_skills": "硬技能",
+        "soft_skills": "软技能",
+        "formatting": "格式",
+        "analysis_report": "分析报告",
+        "improvements": "已做的改进",
+        "ats_check": "ATS 格式检查",
+        "suggested_keywords": "建议关键字",
+        "example": "示例：",
+        "benefit": "好处",
+        "support_title": "您喜欢这个项目吗？",
+        "support_desc": "GoGlobalCV.com 是一个免费的开源项目。您可以请我们喝杯咖啡来支持服务器费用。☕",
+        "buy_coffee": "请我喝杯咖啡",
+        "overview_summary": "高层评估",
+        "overview_hint": "经过我们的优化，您的简历分数已提高到此水平。详情如下。",
+        "jobfit_title": "与此职位匹配",
+        "jobfit_score_label": "职位匹配分数",
+        "jobfit_level_label": "匹配级别",
+        "jobfit_keyword_rate": "职位描述中的关键字覆盖率",
+        "jobfit_strong": "强匹配",
+        "jobfit_missing": "简历中缺失",
+        "jobfit_nice": "锦上添花",
+        "jobfit_desc_dynamic": "此分数反映了您的技能和经验与职位要求的匹配程度。",
+        "jobfit_cta_title": "解锁您的职位匹配分数",
+        "jobfit_cta_desc": "添加职位描述以查看您的简历与职位的匹配程度并获取缺失的关键字。",
+        "jobfit_cta_button": "使用职位描述进行分析",
+        "interview_prep_desc": "根据您的简历和此职位描述生成个性化的面试问题和答案。",
+        "generate_questions": "生成问题"
+    },
+    "upload": {
+        "title": "上传简历 (PDF/Word)",
+        "job_desc_label": "职位描述（可选 - 推荐）",
+        "job_desc_placeholder": "在此粘贴职位描述。AI 将根据此广告中的关键字优化您的简历。",
+        "analyze_button": "分析并改进我的简历",
+        "privacy_note": "您的隐私对我们很重要。您的简历不会存储在我们的服务器上。",
+        "analyzing": "正在分析...",
+        "drag_drop": "拖放或点击上传",
+        "file_selected": "已选文件：",
+        "change_file": "更改文件"
+    },
+    "loading": {
+        "start": "开始分析...",
+        "step1": "正在扫描和解析简历...",
+        "step2": "正在分析 ATS 兼容性...",
+        "step3": "正在识别关键字和差距...",
+        "step4": "AI 正在详细检查您的简历...",
+        "step5": "正在计算 ATS 兼容性分数...",
+        "step6": "正在检查英语语法...",
+        "step7": "正在扫描行业特定关键字...",
+        "step8": "快完成了，请不要关闭页面！🚀"
+    },
+    "interview_loading": {
+        "step1": "正在分析您的简历经验...",
+        "step2": "正在解析职位要求...",
+        "step3": "正在识别潜在的面试主题...",
+        "step4": "正在生成行为问题...",
+        "step5": "正在起草示例答案和提示...",
+        "step6": "正在完成您的准备套件..."
+    },
+    "preview": "预览",
+    "payment": {
+        "unlock_title": "解锁您的简历",
+        "description": "立即获取经过 ATS 优化、专业格式化的简历。",
+        "one_time": "一次性付款",
+        "feature_docx": "下载可编辑的 .docx 文件",
+        "feature_ats": "已应用 ATS 优化",
+        "feature_format": "专业格式",
+        "processing": "正在处理...",
+        "pay_button": "付款并下载",
+        "secure_note": "由 Lemon Squeezy 担保。100% 退款保证。"
+    },
+    "cover_letter": {
+        "title": "求职信生成器",
+        "subtitle": "人工智能驱动的个性化求职信",
+        "create_btn": "创建求职信",
+        "job_desc_placeholder": "在此粘贴职位描述...",
+        "tone_label": "语气",
+        "tone_professional": "专业的",
+        "tone_enthusiastic": "热情的",
+        "tone_confident": "自信的",
+        "generate_btn": "生成求职信"
+    },
+    "interview_prep": {
+        "title": "面试准备套件",
+        "subtitle": "人工智能驱动的面试问答",
+        "regenerate": "重新生成"
+    },
+    "common": {
+        "copy": "复制文本",
+        "copied": "已复制！",
+        "download_docx": "下载 DOCX",
+        "regenerate": "重新生成"
+    },
+    "error": {
+        "system_busy_title": "系统当前繁忙 🤯",
+        "system_busy_desc": "AI 服务目前流量较大。请在 1 分钟后重试。",
+        "try_again": "重试"
+    }
+}

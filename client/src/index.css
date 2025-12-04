@@ -4,5 +4,161 @@ body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+@layer utilities {
+
+    /* Fade-in up animation */
+    .animate-fade-in-up {
+        animation: fade-in-up 0.6s ease-out both;
+    }
+
+    @keyframes fade-in-up {
+        0% {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Page transition (girişte hafif blur + fade) */
+    .animate-page-enter {
+        animation: page-enter 0.45s ease-out both;
+    }
+
+    @keyframes page-enter {
+        0% {
+            opacity: 0;
+            filter: blur(6px);
+            transform: translateY(10px);
+        }
+
+        100% {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+    }
+
+    /* Hover micro-scale */
+    .hover-lift {
+        @apply transition-transform duration-200 ease-out hover:-translate-y-0.5;
+    }
+
+    /* Base glass panel */
+    .panel-glass {
+        @apply bg-slate-900/60 backdrop-blur-md border border-slate-700/70 rounded-3xl;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    /* Small glass card */
+    .card-glass {
+        @apply bg-slate-900/70 backdrop-blur-sm border border-slate-700/60 rounded-xl;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.7);
+    }
+
+    /* Section header line */
+    .section-divider-indigo {
+        @apply h-px w-full;
+        background-image: linear-gradient(to right, rgba(99, 102, 241, 0.6), transparent, transparent);
+    }
+
+    .section-divider-amber {
+        @apply h-px w-full;
+        background-image: linear-gradient(to right, rgba(251, 191, 36, 0.7), transparent, transparent);
+    }
+
+    /* DOCX Preview Bullet Fixes */
+    .docx-preview ul {
+        list-style-type: disc !important;
+        padding-left: 1.5rem !important;
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .docx-preview li {
+        display: list-item !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    /* CV Page Styles (Matching DOCX) */
+    .cv-page h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .cv-page .cv-contact-line {
+        font-size: 11px;
+        text-align: center;
+        color: #4b5563;
+        /* slate-600 */
+        margin-bottom: 18px;
+    }
+
+    /* Section headers */
+    .cv-page h2 {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1d4ed8;
+        /* indigo-600 */
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-top: 18px;
+        margin-bottom: 6px;
+    }
+
+    /* Role titles */
+    .cv-page .cv-role-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1d4ed8;
+        margin-top: 10px;
+    }
+
+    /* Company + location line */
+    .cv-page .cv-company-line {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    /* Date line */
+    .cv-page .cv-date-line {
+        font-size: 11px;
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 4px;
+    }
+
+    /* Paragraphs */
+    .cv-page p {
+        margin: 0 0 4px 0;
+    }
+
+    /* Bullet lists */
+    .cv-page ul {
+        margin: 0 0 8px 1.2rem;
+        padding-left: 0;
+        list-style-type: disc;
+    }
+
+    .cv-page li {
+        margin: 0 0 3px 0;
+    }
+
+    /* Hide mark tags visually if they slip through */
+    .cv-page mark[data-reason] {
+        background: transparent;
+        color: inherit;
+        font-weight: inherit;
+        border-bottom: none;
+    }
 }

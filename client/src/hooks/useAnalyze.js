@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { trackEvent, ANALYTICS_EVENTS } from '../lib/analytics';
+import { useTranslation } from 'react-i18next';
 
 export const useAnalyze = () => {
     const [file, setFile] = useState(null);
@@ -9,7 +10,7 @@ export const useAnalyze = () => {
     const [error, setError] = useState(null);
     const [isAiBusy, setIsAiBusy] = useState(false);
     const [progress, setProgress] = useState(0);
-    const [loadingText, setLoadingText] = useState("Analiz Başlatılıyor...");
+    const [loadingText, setLoadingText] = useState("loading.start");
 
     useEffect(() => {
         if (loading) {
@@ -31,23 +32,23 @@ export const useAnalyze = () => {
                     if (currentProgress >= 90) {
                         setLoadingText((prevText) => {
                             const messages = [
-                                "Yapay zeka CV'nizi detaylıca inceliyor...",
-                                "ATS uyumluluk skoru hesaplanıyor...",
-                                "İngilizce dil bilgisi kontrol ediliyor...",
-                                "Sektörel anahtar kelimeler taranıyor...",
-                                "Neredeyse bitti, lütfen sayfayı kapatmayın! 🚀",
-                                "Sonuçlar hazırlanıyor..."
+                                "loading.step3",
+                                "loading.step4",
+                                "loading.step5",
+                                "loading.step6",
+                                "loading.step7",
+                                "loading.step8"
                             ];
                             const currentIndex = messages.indexOf(prevText);
                             const nextIndex = (currentIndex + 1) % messages.length;
                             return messages[nextIndex];
                         });
                     } else if (currentProgress < 30) {
-                        setLoadingText("CV Taranıyor ve Ayrıştırılıyor...");
+                        setLoadingText("loading.step1");
                     } else if (currentProgress < 60) {
-                        setLoadingText("ATS Uyumluluk Analizi Yapılıyor...");
+                        setLoadingText("loading.step2");
                     } else {
-                        setLoadingText("Anahtar Kelimeler ve Eksikler Belirleniyor...");
+                        setLoadingText("loading.step3");
                     }
                     return currentProgress;
                 });
@@ -59,11 +60,13 @@ export const useAnalyze = () => {
             };
         } else {
             setProgress(0);
-            setLoadingText("Analiz Başlatılıyor...");
+            setLoadingText("loading.start");
         }
     }, [loading]);
 
-    const handleAnalyze = async () => {
+    const { i18n } = useTranslation();
+
+    const handleAnalyze = async (jobDescOverride = null) => {
         if (!file) return;
 
         trackEvent(ANALYTICS_EVENTS.CV_UPLOAD, { file_type: file.type });
@@ -77,7 +80,9 @@ export const useAnalyze = () => {
 
         const formData = new FormData();
         formData.append('cv', file);
-        formData.append('jobDescription', jobDesc);
+        // Use override if provided, otherwise use state
+        formData.append('jobDescription', jobDescOverride !== null ? jobDescOverride : jobDesc);
+        formData.append('language', i18n.language);
 
         try {
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -109,6 +114,35 @@ export const useAnalyze = () => {
         }
     };
 
+    const calculateJobMatch = async (currentCvText, newJobDesc) => {
+        if (!currentCvText || !newJobDesc) return;
+
+        try {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+            const res = await fetch(`${apiUrl}/job-match`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    cvText: currentCvText,
+                    jobDescription: newJobDesc,
+                    language: i18n.language
+                })
+            });
+
+            const data = await res.json();
+            if (data.jobFit) {
+                trackEvent(ANALYTICS_EVENTS.JOB_MATCH_SUCCESS, { score: data.jobFit.score });
+                setResult(prev => ({
+                    ...prev,
+                    jobFit: data.jobFit,
+                    missingKeywords: data.missingKeywords || prev.missingKeywords
+                }));
+            }
+        } catch (error) {
+            console.error("Job Match update failed:", error);
+        }
+    };
+
     return {
         file,
         setFile,
@@ -121,8 +155,8 @@ export const useAnalyze = () => {
         isAiBusy,
         progress,
         loadingText,
-        loadingText,
         handleAnalyze,
+        calculateJobMatch,
         clearError: () => {
             setError(null);
             setFile(null);

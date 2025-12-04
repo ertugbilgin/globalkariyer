@@ -1,0 +1,171 @@
+{
+    "header": {
+        "subtitle": "Yurt Dışı Kariyer Asistanı",
+        "download_cv": "CV İndir (.docx)",
+        "download": "İndir",
+        "interview_prep": "Mülakat Hazırlığı",
+        "browser_alert": "⚠️ LinkedIn/Instagram tarayıcısı dosya indirmeyi engelleyebilir.\n\nLütfen sağ üstteki '...' menüsünden 'Tarayıcıda Aç' (Open in Browser) seçeneğini kullanın."
+    },
+    "landing": {
+        "hero": {
+            "title_part1": "CV’niz Global Standartlara",
+            "title_part2": "Hazır mı?",
+            "subtitle_part1": "Yapay zeka ile CV’nizi saniyeler içinde analiz edin, ATS skorunuzu öğrenin ve iş ilanına göre",
+            "job_match_score": "Job Match Score",
+            "subtitle_part2": "alın. Yurt dışı başvurular için yeniden yazılmış profesyonel CV’nizi indirin.",
+            "cta": "CV’mi Analiz Et ve İyileştir ✨",
+            "privacy": "%100 gizlilik. Dosyalarınız sunucularımızda saklanmaz."
+        },
+        "steps": {
+            "1": {
+                "title": "🚀 1. CV’ni Yükle",
+                "desc": "PDF/Word formatında CV’ni ekle. Sistem anında <0>ATS uyumluluğunu</0> analiz eder."
+            },
+            "2": {
+                "title": "🎯 2. İş İlanını Yapıştır (Opsiyonel)",
+                "desc": "Başvurmak istediğin iş ilanını eklersen, yapay zeka CV’ni bu role göre değerlendirir ve sana <0>Job Match Score</0> verir."
+            },
+            "3": {
+                "title": "🤖 3. Optimize Edilmiş Global CV’ni Al",
+                "desc": "AI, CV’ni yeniden yazar, eksik anahtar kelimeleri ekler ve <0>ATS’ye tam uyumlu</0> güçlü bir doküman üretir."
+            }
+        },
+        "jobmatch": {
+            "title": "🎯 Yeni: Job Match Score",
+            "desc": "İş ilanını eklediğinde GoGlobalCV.com CV’ni bu role göre analiz eder ve sana:",
+            "item1": {
+                "title": "✔ Job Match Score",
+                "desc": "0–100 arası genel uyum skorun."
+            },
+            "item2": {
+                "title": "✔ Eksikler",
+                "desc": "CV’inde olmayan ama iş ilanında aranan noktalar."
+            },
+            "item3": {
+                "title": "✔ Anahtar Kelimeler",
+                "desc": "ATS’e takılmamak için eklemen gereken global terimler."
+            }
+        },
+        "trust": {
+            "title": "🔒 Güvenliğiniz Önceliğimiz",
+            "desc": "Dosyalarınız asla kaydedilmez veya paylaşılmaz. İşlem tamamlandıktan hemen sonra silinir."
+        },
+        "final_cta": {
+            "title": "Hazır mısın?",
+            "desc": "Global standartlarda bir CV ile başvurularını güçlendir.",
+            "button": "CV’mi Analiz Et ve İyileştir ✨"
+        }
+    },
+    "hero": {
+        "title_part1": "CV'niz Global Standartlara",
+        "title_part2": "Hazır mı?",
+        "description": "Yapay zeka ile CV'nizi saniyeler içinde analiz edin, ATS skorunu öğrenin ve yurt dışı başvuruları için profesyonelce yeniden yazın."
+    },
+    "dashboard": {
+        "new_analysis": "Yeni Analiz",
+        "current": "Mevcut CV Puanı",
+        "potential": "Genel CV Sağlığı",
+        "cv_health_score": "Optimize Edilmiş CV Puanı",
+        "interview_chance": "Mülakat Şansınız:",
+        "interview_chance_desc": "\"CV İndir\" butonu ile optimize edilmiş CV'nizi indirip şansınızı artırın.",
+        "ats_analysis": "ATS Detay Analizi",
+        "searchability": "Bulunabilirlik (Searchability)",
+        "hard_skills": "Teknik Yetkinlik (Hard Skills)",
+        "soft_skills": "Sosyal Beceriler (Soft Skills)",
+        "formatting": "ATS Formatı (Formatting)",
+        "analysis_report": "Analiz Raporu",
+        "improvements": "Yapılan İyileştirmeler",
+        "ats_check": "ATS Format Kontrolü",
+        "suggested_keywords": "Önerilen Anahtar Kelimeler",
+        "example": "Örnek:",
+        "benefit": "Fayda",
+        "support_title": "Bu Projeyi Beğendiniz mi?",
+        "support_desc": "GoGlobalCV.com tamamen ücretsiz ve açık kaynaklı bir projedir. Sunucu masraflarına destek olmak isterseniz bize bir kahve ısmarlayabilirsiniz. ☕",
+        "buy_coffee": "Bana Kahve Ismarla",
+        "overview_summary": "Genel Değerlendirme",
+        "overview_hint": "Yaptığımız iyileştirmelerle CV puanınız bu seviyeye yükseldi. Detaylar aşağıdadır.",
+        "jobfit_title": "İş İlanı Uyumu",
+        "jobfit_score_label": "İlan Eşleşmesi",
+        "jobfit_level_label": "Uyum Seviyesi",
+        "jobfit_keyword_rate": "İlan anahtar kelime oranı",
+        "jobfit_strong": "Güçlü Eşleşmeler",
+        "jobfit_missing": "CV'nizde Eksik Olanlar",
+        "jobfit_nice": "Olsa İyi Olur (Nice-to-have)",
+        "jobfit_desc_dynamic": "Bu puan, yeteneklerinizin ve deneyiminizin iş ilanıyla ne kadar örtüştüğünü gösterir.",
+        "jobfit_cta_title": "İş Eşleşme Skorunu Aç",
+        "jobfit_cta_desc": "İş ilanı ekleyerek CV'nizin ilana ne kadar uyduğunu görün ve eksik anahtar kelimeleri öğrenin.",
+        "jobfit_cta_button": "İş İlanı ile Analiz Et",
+        "interview_prep_desc": "CV'niz ve bu iş ilanı baz alınarak kişiselleştirilmiş mülakat soruları ve cevapları oluşturun.",
+        "generate_questions": "Soruları Hazırla"
+    },
+    "upload": {
+        "title": "CV Yükle (PDF/Word)",
+        "job_desc_label": "İŞ İLANI (OPSİYONEL - ÖNERİLİR)",
+        "job_desc_placeholder": "Başvurmak istediğiniz iş ilanının metnini buraya yapıştırın. Yapay zeka, CV'nizi bu ilandaki anahtar kelimelere göre optimize edecektir.",
+        "analyze_button": "CV'mi Analiz Et ve İyileştir",
+        "privacy_note": "Gizliliğiniz bizim için önemli. CV'niz sunucularımızda saklanmaz.",
+        "analyzing": "Analiz Ediliyor...",
+        "drag_drop": "Yüklemek için sürükleyip bırakın veya tıklayın",
+        "file_selected": "Seçilen dosya:",
+        "change_file": "Dosyayı değiştir"
+    },
+    "loading": {
+        "start": "Analiz Başlatılıyor...",
+        "step1": "CV Taranıyor ve Ayrıştırılıyor...",
+        "step2": "ATS Uyumluluk Analizi Yapılıyor...",
+        "step3": "Anahtar Kelimeler ve Eksikler Belirleniyor...",
+        "step4": "Yapay zeka CV'nizi detaylıca inceliyor...",
+        "step5": "ATS uyumluluk skoru hesaplanıyor...",
+        "step6": "İngilizce dil bilgisi kontrol ediliyor...",
+        "step7": "Sektörel anahtar kelimeler taranıyor...",
+        "step8": "Neredeyse bitti, lütfen sayfayı kapatmayın! 🚀"
+    },
+    "interview_loading": {
+        "step1": "CV deneyimleriniz analiz ediliyor...",
+        "step2": "İş ilanı gereksinimleri inceleniyor...",
+        "step3": "Potansiyel mülakat konuları belirleniyor...",
+        "step4": "Davranışsal sorular oluşturuluyor...",
+        "step5": "Örnek cevaplar ve ipuçları hazırlanıyor...",
+        "step6": "Hazırlık kitiniz tamamlanıyor..."
+    },
+    "preview": "Önizleme",
+    "payment": {
+        "unlock_title": "CV'nizin Kilidini Açın",
+        "description": "ATS uyumlu, profesyonelce formatlanmış CV'nizi hemen indirin.",
+        "one_time": "Tek seferlik ödeme",
+        "feature_docx": "Düzenlenebilir .docx dosyası indir",
+        "feature_ats": "ATS Optimizasyonu uygulandı",
+        "feature_format": "Profesyonel formatlama",
+        "processing": "İşleniyor...",
+        "pay_button": "Öde ve İndir",
+        "secure_note": "Lemon Squeezy ile güvenli ödeme. %100 İade garantisi."
+    },
+    "cover_letter": {
+        "title": "Ön Yazı Oluşturucu",
+        "subtitle": "Yapay zeka destekli kişisel ön yazı",
+        "create_btn": "Ön Yazı Oluştur",
+        "job_desc_placeholder": "İş ilanını buraya yapıştırın...",
+        "tone_label": "Ton",
+        "tone_professional": "Profesyonel",
+        "tone_enthusiastic": "Hevesli",
+        "tone_confident": "Kendinden Emin",
+        "generate_btn": "Ön Yazı Oluştur"
+    },
+    "interview_prep": {
+        "title": "Mülakat Hazırlık Kiti",
+        "subtitle": "Yapay zeka destekli mülakat soruları ve cevapları",
+        "regenerate": "Yeniden Oluştur"
+    },
+    "common": {
+        "back": "Düzenlemeye Dön",
+        "copied": "Kopyalandı!",
+        "copy": "Metni Kopyala",
+        "download_docx": "DOCX İndir",
+        "regenerate": "Yeniden Oluştur"
+    },
+    "error": {
+        "system_busy_title": "Sistem Şu An Çok Yoğun 🤯",
+        "system_busy_desc": "Yapay zeka servislerinde yoğunluk yaşanıyor. Lütfen 1 dakika sonra tekrar deneyin.",
+        "try_again": "Tekrar Dene"
+    }
+}
