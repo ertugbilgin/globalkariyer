@@ -22,13 +22,17 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
     ];
 
     useEffect(() => {
-        // Check sessionStorage for JD saved before payment
-        const savedJD = sessionStorage.getItem('temp_job_desc');
-        const jdToUse = jobDescription || savedJD || "";
-        setLocalJobDesc(jdToUse);
+        // Only update when modal state changes
+        if (isOpen) {
+            // Priority: sessionStorage (for after payment) > jobDescription prop
+            const savedJD = sessionStorage.getItem('temp_job_desc');
+            const jdToUse = savedJD || jobDescription || "";
+            console.log('🔍 INTERVIEW PREP: Restoring JD', { savedJD: savedJD?.substring(0, 50), jobDescription: jobDescription?.substring(0, 50) });
+            setLocalJobDesc(jdToUse);
+        }
         // Reset prep content if the job description from parent changes
         setPrep(null);
-    }, [jobDescription]);
+    }, [isOpen, jobDescription]);
 
     // Simulate progress
     useEffect(() => {

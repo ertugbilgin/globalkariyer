@@ -80,7 +80,9 @@ function App() {
     const params = new URLSearchParams(window.location.search);
     const paymentSuccess = params.get('payment_success');
     const paymentCancelled = params.get('payment_cancelled');
-    const successType = params.get('type');
+    const purchasedFeature = params.get('feature'); // NOT 'type'!
+
+    console.log('🔍 Payment check:', { paymentSuccess, paymentCancelled, purchasedFeature });
 
     // Handle payment cancellation - restore state and show message
     if (paymentCancelled === 'true') {
@@ -110,65 +112,69 @@ function App() {
       return; // Exit early, don't process payment success
     }
 
-    if (paymentSuccess === 'true' && successType) {
-      // Restore saved analysis state
-      const savedAnalysis = sessionStorage.getItem('temp_analysis');
-      const savedJobDesc = sessionStorage.getItem('temp_job_desc');
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentSuccess = urlParams.get('payment_success');
+    // FIXED: Check for 'feature' param, not 'type'
+    if (paymentSuccess === 'true' && purchasedFeature) {
+      console.log('✅ Payment success detected, restoring state...');
 
-      if (paymentSuccess) {
-        // Restore analysis state - check both old and new keys for backwards compatibility
-        const savedResult = sessionStorage.getItem('temp_analysis') || sessionStorage.getItem('result');
-        const savedJobDesc = sessionStorage.getItem('temp_job_desc') || sessionStorage.getItem('jobDesc');
+      // Restore analysis state - check both old and new keys for backwards compatibility
+      const savedResult = sessionStorage.getItem('temp_analysis') || sessionStorage.getItem('result');
+      const savedJobDesc = sessionStorage.getItem('temp_job_desc') || sessionStorage.getItem('jobDesc');
 
-        if (savedResult) {
-          try {
-            const parsedResult = JSON.parse(savedResult);
-            setResult(parsedResult);
-            console.log('✅ Analysis state restored after payment');
-          } catch (e) {
-            console.error('Failed to parse saved result:', e);
-          }
+      console.log('🔍 sessionStorage check:', {
+        hasTempAnalysis: !!sessionStorage.getItem('temp_analysis'),
+        hasResult: !!sessionStorage.getItem('result'),
+        hasTempJobDesc: !!sessionStorage.getItem('temp_job_desc'),
+        hasJobDesc: !!sessionStorage.getItem('jobDesc')
+      });
+
+      if (savedResult) {
+        try {
+          const parsedResult = JSON.parse(savedResult);
+          setResult(parsedResult);
+          console.log('✅ Analysis state restored after payment');
+        } catch (e) {
+          console.error('Failed to parse saved result:', e);
         }
-
-        if (savedJobDesc) {
-          setJobDesc(savedJobDesc);
-          console.log('✅ Job description restored:', savedJobDesc.substring(0, 50) + '...');
-        }
-
-        // Get purchased feature from URL
-        const purchasedFeature = urlParams.get('feature');
-        console.log('💳 Purchased feature:', purchasedFeature);
-
-        // Unlock the feature user just paid for
-        switch (purchasedFeature) {
-          case 'cv_download':
-            setIsPaid(true); // Mark as paid for CV download
-            alert('🎉 Thank you! Your optimized CV download is ready!');
-            break;
-          case 'cover_letter':
-            setHasCoverLetterAccess(true);
-            setIsCoverLetterOpen(true); // Open modal automatically
-            alert('🎉 Congratulations! You now have access to Cover Letter generation!');
-            break;
-          case 'interview_prep':
-            setHasInterviewPrepAccess(true);
-            setIsInterviewPrepOpen(true); // Open modal automatically
-            alert('🎉 Congratulations! You now have access to Interview Prep!');
-            break;
-          case 'premium':
-            setHasPremiumAccess(true);
-            setIsPaid(true); // Premium includes CV download
-            setHasCoverLetterAccess(true);
-            setHasInterviewPrepAccess(true);
-            alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
-            break;
-        }
-
-        // Clean URL
-        window.history.replaceState({}, document.title, "/");
+      } else {
+        console.warn('⚠️ No saved result found in sessionStorage!');
       }
+
+      if (savedJobDesc) {
+        setJobDesc(savedJobDesc);
+        console.log('✅ Job description restored:', savedJobDesc.substring(0, 50) + '...');
+      }
+
+      // Unlock the feature user just paid for
+      console.log('💳 Purchased feature:', purchasedFeature);
+
+      switch (purchasedFeature) {
+        case 'cv_download':
+          setIsPaid(true); // Mark as paid for CV download
+          alert('🎉 Thank you! Your optimized CV download is ready!');
+          break;
+        case 'cover_letter':
+          setHasCoverLetterAccess(true);
+          setIsCoverLetterOpen(true); // Open modal automatically
+          alert('🎉 Congratulations! You now have access to Cover Letter generation!');
+          break;
+        case 'interview_prep':
+          setHasInterviewPrepAccess(true);
+          setIsInterviewPrepOpen(true); // Open modal automatically
+          alert('🎉 Congratulations! You now have access to Interview Prep!');
+          break;
+        case 'premium':
+          setHasPremiumAccess(true);
+          setIsPaid(true); // Premium includes CV download
+          setHasCoverLetterAccess(true);
+          setHasInterviewPrepAccess(true);
+          alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
+          break;
+        default:
+          console.warn('⚠️ Unknown feature:', purchasedFeature);
+      }
+
+      // Clean URL
+      window.history.replaceState({}, document.title, "/");
     }
   }, [setResult, setJobDesc]);
 
