@@ -1,7 +1,7 @@
 import { X, Check } from "lucide-react";
 import { useState } from "react";
 
-export default function PaywallModal({ isOpen, onClose, feature }) {
+export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc }) {
     const [loading, setLoading] = useState(false);
     const [loadingTarget, setLoadingTarget] = useState(null); // hangi buton için loading
 
@@ -83,13 +83,22 @@ export default function PaywallModal({ isOpen, onClose, feature }) {
 
     const handlePurchase = async (endpoint, billingType = "monthly", targetKey = "primary") => {
         if (!paymentsEnabled) {
-            alert("Payments are coming soon! You’ll be able to purchase this feature after launch.");
+            alert("Payments are coming soon! You'll be able to purchase this feature after launch.");
             return;
         }
 
         setLoading(true);
         setLoadingTarget(targetKey);
         try {
+            // Save analysis state to sessionStorage BEFORE redirect
+            // This allows user to return to their analysis results after payment
+            if (result) {
+                sessionStorage.setItem('temp_analysis', JSON.stringify(result));
+            }
+            if (jobDesc) {
+                sessionStorage.setItem('temp_job_desc', jobDesc);
+            }
+
             const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001";
             const body =
                 billingType === "yearly"

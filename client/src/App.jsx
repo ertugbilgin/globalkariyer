@@ -43,22 +43,41 @@ function App() {
 
   const printRef = useRef(null);
 
-  // Check for payment success on mount
+  // Check for payment success and restore analysis state
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const paymentSuccess = params.get('payment_success');
     const successType = params.get('type');
-    if (successType) {
-      // In a real app, verify session_id with backend
-      // For now, we trust the redirect for this demo
-      alert(`Payment Successful for ${successType}! Feature unlocked.`);
+
+    if (paymentSuccess === 'true' && successType) {
+      // Restore saved analysis state
+      const savedAnalysis = sessionStorage.getItem('temp_analysis');
+      const savedJobDesc = sessionStorage.getItem('temp_job_desc');
+
+      if (savedAnalysis) {
+        try {
+          const parsedResult = JSON.parse(savedAnalysis);
+          setResult(parsedResult);
+          if (savedJobDesc) {
+            setJobDesc(savedJobDesc);
+          }
+
+          // Clean up session storage
+          sessionStorage.removeItem('temp_analysis');
+          sessionStorage.removeItem('temp_job_desc');
+
+          console.log('✅ Analysis state restored after payment');
+        } catch (e) {
+          console.error('Failed to restore analysis:', e);
+        }
+      }
 
       // Clean URL
       window.history.replaceState({}, document.title, "/");
 
       if (successType === 'cv_download') setIsPaid(true);
-      // For others, we might need specific states, but for now let's assume global unlock or specific logic
     }
-  }, []);
+  }, [setResult, setJobDesc]);
 
   const openPaywall = (feature) => {
     setPaywallFeature(feature);
@@ -95,6 +114,8 @@ function App() {
           isOpen={!!paywallFeature}
           onClose={() => setPaywallFeature(null)}
           feature={paywallFeature}
+          result={result}
+          jobDesc={jobDesc}
         />
       )}
 
