@@ -29,9 +29,19 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
             const jdToUse = savedJD || jobDescription || "";
             console.log('🔍 INTERVIEW PREP: Restoring JD', { savedJD: savedJD?.substring(0, 50), jobDescription: jobDescription?.substring(0, 50) });
             setLocalJobDesc(jdToUse);
+
+            // Restore prep from sessionStorage if available
+            const savedPrep = sessionStorage.getItem('temp_interview_prep');
+            if (savedPrep) {
+                try {
+                    const parsedPrep = JSON.parse(savedPrep);
+                    console.log('✅ Restored interview prep from cache');
+                    setPrep(parsedPrep);
+                } catch (e) {
+                    console.error('Failed to parse saved prep:', e);
+                }
+            }
         }
-        // Reset prep content if the job description from parent changes
-        setPrep(null);
     }, [isOpen, jobDescription]);
 
     // Simulate progress
@@ -93,6 +103,10 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
             const data = await res.json();
             setPrep(data);
 
+            // Cache prep to sessionStorage
+            sessionStorage.setItem('temp_interview_prep', JSON.stringify(data));
+            console.log('💾 Cached interview prep to sessionStorage');
+
             // Notify parent about the new JD
             if (onJobDescUpdate && localJobDesc) {
                 onJobDescUpdate(localJobDesc);
@@ -107,8 +121,8 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
 
     const handleCopy = () => {
         if (!prep) return;
-        // Trigger paywall for "Copy All" as it gives full content
-        if (onOpenPaywall) {
+        // Check if user has paid before triggering paywall
+        if (!isPaid && onOpenPaywall) {
             onOpenPaywall();
             return;
         }
@@ -132,9 +146,11 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
     };
 
     const handleDownload = () => {
-        if (onOpenPaywall) {
+        if (!isPaid && onOpenPaywall) {
+            // User hasn't paid, show paywall
             onOpenPaywall();
         } else {
+            // User has access, generate the document
             generateInterviewPrepDoc(prep);
         }
     };
@@ -254,7 +270,7 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
                         <div className="space-y-8">
                             {prep.categories.map((cat) => (
                                 <div key={cat.id} className="space-y-4">
-                                    <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur py-3 border-b border-slate-800">
+                                    <div className="bg-slate-900/50 py-3 border-b border-slate-800">
                                         <h3 className="text-lg font-bold text-sky-300">{cat.title}</h3>
                                         <p className="text-sm text-slate-400">{cat.description}</p>
                                     </div>
@@ -262,7 +278,7 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
                                     <div className="grid gap-4">
                                         {cat.questions?.map((q, idx) => {
                                             questionCount++;
-                                            const isLocked = questionCount > 2;
+                                            const isLocked = !isPaid && questionCount > 2;
 
                                             if (isLocked) {
                                                 // Only render one locked card to avoid clutter, or render blurred versions
@@ -306,7 +322,11 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
                                                     <div className="pl-4 border-l-2 border-slate-700 space-y-3 group-hover:border-sky-500/30 transition-colors">
                                                         <div className="text-sm text-slate-300 whitespace-pre-line leading-relaxed">
                                                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Answer Outline</span>
-                                                            {q.answerOutline}
+                                                            {typeof q.answerOutline === 'string'
+                                                                ? q.answerOutline
+                                                                : Array.isArray(q.answerOutline)
+                                                                    ? q.answerOutline.join('\n')
+                                                                    : JSON.stringify(q.answerOutline, null, 2)}
                                                         </div>
 
                                                         {q.tips && (

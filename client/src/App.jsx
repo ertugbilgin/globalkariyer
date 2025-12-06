@@ -15,6 +15,7 @@ import PaywallModal from './components/PaywallModal'
 import CoverLetterModal from './components/CoverLetterModal';
 import InterviewPrepModal from './components/InterviewPrepModal';
 import JobMatchModal from './components/JobMatchModal';
+import SuccessModal from './components/SuccessModal';
 
 function App() {
   const {
@@ -36,6 +37,7 @@ function App() {
 
   const [isPaid, setIsPaid] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState(null);
+  const [successModalFeature, setSuccessModalFeature] = useState(null);
 
   // Feature unlock states
   const [hasCoverLetterAccess, setHasCoverLetterAccess] = useState(false);
@@ -47,6 +49,7 @@ function App() {
   const [isJobMatchModalOpen, setIsJobMatchModalOpen] = useState(false);
 
   const printRef = useRef(null);
+  const justCompletedPayment = useRef(false); // Flag to prevent restoration after payment
 
   // Persist feature access to localStorage whenever it changes
   useEffect(() => {
@@ -56,10 +59,18 @@ function App() {
       hasPremiumAccess,
       isPaid
     }));
+    console.log('💾 Persisted feature access to localStorage:', { hasCoverLetterAccess, hasInterviewPrepAccess, hasPremiumAccess, isPaid });
   }, [hasCoverLetterAccess, hasInterviewPrepAccess, hasPremiumAccess, isPaid]);
 
-  // Restore feature access on mount
+  // Restore feature access ONLY on initial mount
   useEffect(() => {
+    // Skip restoration if we just completed a payment
+    if (justCompletedPayment.current) {
+      console.log('⏭️ Skipping localStorage restoration - just completed payment');
+      justCompletedPayment.current = false; // Reset flag
+      return;
+    }
+
     const saved = localStorage.getItem('feature_access');
     if (saved) {
       try {
@@ -68,12 +79,13 @@ function App() {
         setHasInterviewPrepAccess(ip || false);
         setHasPremiumAccess(pm || false);
         setIsPaid(pd || false);
-        console.log('✅ Restored feature access from localStorage');
+        console.log('✅ Restored feature access from localStorage:', { cl, ip, pm, pd });
       } catch (e) {
         console.error('Failed to restore feature access:', e);
       }
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // CRITICAL: Empty dependency array - only run on mount!
 
   // Check for payment success and restore analysis state
   useEffect(() => {
@@ -147,31 +159,35 @@ function App() {
       // Unlock the feature user just paid for
       console.log('💳 Purchased feature:', purchasedFeature);
 
+      // Set flag to prevent localStorage restoration from overwriting
+      justCompletedPayment.current = true;
+
       switch (purchasedFeature) {
         case 'cv_download':
-          setIsPaid(true); // Mark as paid for CV download
-          alert('🎉 Thank you! Your optimized CV download is ready!');
+          setIsPaid(true);
+          console.log('Setting isPaid = true for cv_download');
           break;
         case 'cover_letter':
           setHasCoverLetterAccess(true);
-          setIsCoverLetterOpen(true); // Open modal automatically
-          alert('🎉 Congratulations! You now have access to Cover Letter generation!');
+          console.log('Setting hasCoverLetterAccess = true');
           break;
         case 'interview_prep':
           setHasInterviewPrepAccess(true);
-          setIsInterviewPrepOpen(true); // Open modal automatically
-          alert('🎉 Congratulations! You now have access to Interview Prep!');
+          console.log('Setting hasInterviewPrepAccess = true');
           break;
         case 'premium':
           setHasPremiumAccess(true);
-          setIsPaid(true); // Premium includes CV download
+          setIsPaid(true);
           setHasCoverLetterAccess(true);
           setHasInterviewPrepAccess(true);
-          alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
+          console.log('Setting all premium access flags = true');
           break;
         default:
           console.warn('⚠️ Unknown feature:', purchasedFeature);
       }
+
+      // Set success modal - this will trigger on next render with updated state
+      setSuccessModalFeature(purchasedFeature);
 
       // Clean URL
       window.history.replaceState({}, document.title, "/");
@@ -229,6 +245,24 @@ function App() {
         />
       )}
 
+      {/* SUCCESS MODAL */}
+      <SuccessModal
+        isOpen={!!successModalFeature}
+        onClose={() => setSuccessModalFeature(null)}
+        feature={successModalFeature}
+        onOpenFeature={() => {
+          console.log('🎯 SuccessModal onOpenFeature called for:', successModalFeature);
+          console.log('Current state:', { hasInterviewPrepAccess, hasPremiumAccess });
+          // Open the corresponding feature modal after success modal
+          if (successModalFeature === 'cover_letter') {
+            setIsCoverLetterOpen(true);
+          } else if (successModalFeature === 'interview_prep') {
+            console.log('Opening Interview Prep Modal with isPaid = ', hasInterviewPrepAccess || hasPremiumAccess);
+            setIsInterviewPrepOpen(true);
+          }
+        }}
+      />
+
       {/* GLOBAL COVER LETTER MODAL */}
       <CoverLetterModal
         isOpen={isCoverLetterOpen}
@@ -241,11 +275,13 @@ function App() {
       />
 
       {/* GLOBAL INTERVIEW PREP MODAL */}
+      {isInterviewPrepOpen && console.log('🔍 Rendering InterviewPrepModal with isPaid =', hasInterviewPrepAccess || hasPremiumAccess, { hasInterviewPrepAccess, hasPremiumAccess })}
       <InterviewPrepModal
         isOpen={isInterviewPrepOpen}
         onClose={() => setIsInterviewPrepOpen(false)}
-        result={result}
-        jobDesc={jobDesc}
+        cvText={cvText}
+        jobDescription={jobDesc}
+        onJobDescUpdate={(newJD) => setJobDesc(newJD)}
         onOpenPaywall={() => openPaywall('interview_prep')}
         isPaid={hasInterviewPrepAccess || hasPremiumAccess}
       />

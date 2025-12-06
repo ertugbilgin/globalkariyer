@@ -168,9 +168,16 @@ export const generateInterviewPrepDoc = async (prepData) => {
                 spacing: { after: 120 }
             }));
 
-            // Answer Outline
-            const outlineLines = q.answerOutline.split('\n');
+            // Answer Outline - handle both string and array types
+            const answerText = typeof q.answerOutline === 'string'
+                ? q.answerOutline
+                : Array.isArray(q.answerOutline)
+                    ? q.answerOutline.join('\n')
+                    : JSON.stringify(q.answerOutline);
+
+            const outlineLines = answerText.split('\n');
             outlineLines.forEach(line => {
+                if (!line.trim()) return; // Skip empty lines
                 docChildren.push(new Paragraph({
                     children: [new TextRun({ text: line.trim(), font: fontName, size: 22 })],
                     bullet: { level: 0 }

@@ -128,36 +128,36 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
     // ✳️ DUAL LAYOUT (CV, Cover Letter, Interview Prep)
     if (feature !== 'premium') {
         return (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-                <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                <div className="relative w-full max-w-[95vw] sm:max-w-3xl max-h-[95vh] sm:max-h-none overflow-y-auto bg-white rounded-2xl shadow-2xl animate-scale-in">
                     {/* Close Button */}
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                        className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors z-50 bg-white rounded-full shadow-sm"
                     >
                         <X className="w-5 h-5" />
                     </button>
 
-                    <div className="p-6 md:p-8 space-y-6">
+                    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
                         {/* Header */}
                         <div className="space-y-2 text-center">
-                            <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
                                 {content.title}
                             </h2>
-                            <p className="text-gray-600 text-sm leading-relaxed max-w-2xl mx-auto">
+                            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
                                 {content.subtitle}
                             </p>
                         </div>
 
                         {/* Two options */}
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                             {/* Single Option */}
-                            <div className="border border-gray-200 rounded-xl p-6 flex flex-col justify-between bg-gray-50/60">
-                                <div className="space-y-3">
-                                    <div className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+                            <div className="border border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col justify-between bg-gray-50/60">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <div className="text-[10px] sm:text-xs font-semibold tracking-wide text-gray-500 uppercase">
                                         Single Purchase
                                     </div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                                         {content.singleTitle}
                                     </h3>
                                     <ul className="space-y-2 mt-2">
@@ -173,11 +173,11 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                                     </ul>
                                 </div>
 
-                                <div className="mt-5">
-                                    <div className="text-2xl font-bold text-gray-900">
+                                <div className="mt-4 sm:mt-5">
+                                    <div className="text-xl sm:text-2xl font-bold text-gray-900">
                                         {content.singlePrice}
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-[10px] sm:text-xs text-gray-500 mt-1">
                                         One-time payment.
                                     </p>
 
@@ -186,7 +186,7 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                                             handlePurchase(content.endpoint, "one_time", "single")
                                         }
                                         disabled={loading}
-                                        className="mt-4 w-full py-3 px-4 bg-[#6A5BFF] hover:bg-[#5544FF] text-white font-semibold rounded-lg shadow-md shadow-purple-500/20 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-[#6A5BFF] hover:bg-[#5544FF] text-white text-sm sm:text-base font-semibold rounded-lg shadow-md shadow-purple-500/20 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {paymentsEnabled
                                             ? (loading && loadingTarget === "single" ? "Processing..." : "Unlock Now")
@@ -196,15 +196,15 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                             </div>
 
                             {/* Premium Option */}
-                            <div className="border border-purple-300 rounded-xl p-6 flex flex-col justify-between bg-gradient-to-b from-purple-50 to-white relative">
-                                <div className="absolute -top-2 right-4 px-3 py-1 rounded-full bg-purple-600 text-xs font-semibold text-white shadow-md">
+                            <div className="border border-purple-300 rounded-xl p-4 sm:p-6 flex flex-col justify-between bg-gradient-to-b from-purple-50 to-white relative">
+                                <div className="absolute -top-2 right-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-purple-600 text-[10px] sm:text-xs font-semibold text-white shadow-md">
                                     Most Popular
                                 </div>
-                                <div className="space-y-3">
-                                    <div className="text-xs font-semibold tracking-wide text-purple-600 uppercase">
+                                <div className="space-y-2 sm:space-y-3">
+                                    <div className="text-[10px] sm:text-xs font-semibold tracking-wide text-purple-600 uppercase">
                                         GoGlobalCV Premium
                                     </div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                                         Unlimited Career Tools
                                     </h3>
                                     <ul className="space-y-2 mt-2">
@@ -220,11 +220,11 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                                     </ul>
                                 </div>
 
-                                <div className="mt-5">
-                                    <div className="text-2xl font-bold text-purple-700">
+                                <div className="mt-4 sm:mt-5">
+                                    <div className="text-xl sm:text-2xl font-bold text-purple-700">
                                         {content.premiumPrice}
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-[10px] sm:text-xs text-gray-500 mt-1">
                                         Billed monthly. Cancel anytime.
                                     </p>
 
@@ -233,7 +233,7 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                                             handlePurchase("/pay/premium", "monthly", "premium-monthly")
                                         }
                                         disabled={loading}
-                                        className="mt-4 w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-md shadow-purple-500/40 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md shadow-purple-500/40 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {paymentsEnabled
                                             ? (loading && loadingTarget === "premium-monthly" ? "Processing..." : "Start Premium")
