@@ -9,12 +9,18 @@ const supabase = createClient(
 // Email transporter setup
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-  port: process.env.SMTP_PORT || 465,
-  secure: true,
+  port: parseInt(process.env.SMTP_PORT) || 587, // Changed from 465 to 587 (TLS)
+  secure: false, // Changed from true - use TLS instead of SSL
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  tls: {
+    rejectUnauthorized: false // Accept self-signed certificates
+  },
+  connectionTimeout: 10000, // 10 seconds timeout
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 // Format product name for display
