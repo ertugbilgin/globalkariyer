@@ -68,10 +68,10 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
 
             {/* Main Content - Blurred if error exists */}
             <div className={`space-y-4 transition-all duration-300 ${error ? 'blur-sm opacity-50 pointer-events-none' : ''}`}>
-                <div className={`bg-slate-800/50 rounded-2xl p-8 border-2 border-dashed transition-all duration-200 cursor-pointer relative group text-center ${showHint ? 'border-red-500/50 bg-red-500/5 animate-shake' : 'border-slate-700/50 hover:border-blue-500/50'}`}>
+                <div className={`bg-slate-800/50 rounded-2xl p-8 border-2 border-dashed transition-all duration-200 cursor-pointer relative group text-center ${showHint ? 'border-red-500/50 bg-red-500/5 animate-shake' : 'border-slate-700/50 hover:border-indigo-500/50'}`}>
                     <input type="file" accept=".pdf,.docx" onChange={(e) => setFile(e.target.files[0])} className="absolute inset-0 opacity-0 cursor-pointer" />
                     <div className="flex flex-col items-center gap-4">
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${file ? 'bg-emerald-500/20 text-emerald-400' : showHint ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-400 group-hover:bg-blue-600 group-hover:text-white'}`}>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${file ? 'bg-emerald-500/20 text-emerald-400' : showHint ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white'}`}>
                             {file ? <CheckCircle className="w-8 h-8" /> : showHint ? <AlertCircle className="w-8 h-8" /> : <Upload className="w-8 h-8" />}
                         </div>
                         <div>
