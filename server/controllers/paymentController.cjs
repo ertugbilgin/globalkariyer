@@ -118,11 +118,6 @@ const handleCheckoutComplete = async (session) => {
 
             user = newUser;
             console.log(`✅ New user auto-created: ${email}`);
-
-            // Send welcome email
-            if (productType === 'premium') {
-                await sendWelcomeEmail(email);
-            }
         } else {
             // Update existing user
             const updates = {};
@@ -138,6 +133,19 @@ const handleCheckoutComplete = async (session) => {
                 .from('users')
                 .update(updates)
                 .eq('id', user.id);
+
+            console.log(`✅ Existing user updated: ${email}`);
+        }
+
+        // Send welcome email for premium purchases (both new and existing users)
+        if (productType === 'premium') {
+            try {
+                await sendWelcomeEmail(email);
+                console.log(`✅ Welcome email sent to ${email}`);
+            } catch (emailError) {
+                console.error(`⚠️ Failed to send welcome email: ${emailError.message}`);
+                // Don't throw - email is non-critical
+            }
         }
 
         // Log transaction (idempotent - check if already exists)
