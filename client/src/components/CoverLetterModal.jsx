@@ -3,7 +3,7 @@ import { Loader2, FileText, Copy, Check, X, Wand2, FileDown, Lock } from "lucide
 import { useTranslation } from 'react-i18next';
 import { generateCoverLetterDoc } from '../lib/docxGenerator';
 
-export default function CoverLetterModal({ isOpen, onClose, cvText, jobDescription, onJobDescUpdate, onOpenPaywall, isPaid }) {
+export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, onOpenPaywall, hasAccess }) {
     const { t, i18n } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [coverLetter, setCoverLetter] = useState("");
@@ -27,7 +27,7 @@ export default function CoverLetterModal({ isOpen, onClose, cvText, jobDescripti
         }
 
         // Enforce Paywall BEFORE generation
-        if (!isPaid && onOpenPaywall) {
+        if (!hasAccess && onOpenPaywall) {
             onOpenPaywall();
             return;
         }
@@ -155,10 +155,9 @@ export default function CoverLetterModal({ isOpen, onClose, cvText, jobDescripti
                                 {loading ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
-                                    isPaid ? <Wand2 className="h-5 w-5" /> : <Lock className="h-5 w-5" />
+                                    hasAccess ? <Wand2 className="h-5 w-5" /> : <Lock className="h-5 w-5" />
                                 )}
-                                {!loading && !isPaid && <div className="mr-1"><Wand2 className="h-5 w-5 hidden" /></div>}
-                                {loading ? t('cover_letter.generating', 'Generating...') : (isPaid ? t('cover_letter.generate', 'Generate Cover Letter') : "Unlock Cover Letter")}
+                                {loading ? t('cover_letter.generating', 'Generating...') : (hasAccess ? t('cover_letter.generate', 'Generate Cover Letter') : "Unlock Cover Letter")}
                             </button>
                         </>
                     ) : (
