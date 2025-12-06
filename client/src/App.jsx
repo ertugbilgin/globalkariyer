@@ -100,6 +100,10 @@ function App() {
         // Premium users get everything
         setHasCoverLetterAccess(true);
         setHasInterviewPrepAccess(true);
+
+        // Show welcome toast only for verified premium users
+        setShowUnlockToast(true);
+        setTimeout(() => setShowUnlockToast(false), 5000);
       } else {
         console.log('👤 Standard User Verified (Free Tier)');
         // Explicitly set to false to override any potential lingering local state if needed,
@@ -124,8 +128,7 @@ function App() {
     console.log('🎉 Login successful:', user.email);
     setUser(user);
     verifyPremiumStatus(user.email);
-    setShowUnlockToast(true);
-    setTimeout(() => setShowUnlockToast(false), 5000);
+    // Toast moved to verifyPremiumStatus to avoid false positives
   };
 
   const handleLogout = async () => {
