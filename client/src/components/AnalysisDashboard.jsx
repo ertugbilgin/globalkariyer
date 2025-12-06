@@ -256,11 +256,12 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
             <div className="pointer-events-none absolute -top-10 -right-8 h-40 w-40 rounded-full bg-orange-500/25 blur-3xl" />
             <div
                 className="
-          relative panel-glass p-4 md:p-6 space-y-4
-          bg-slate-950/80 border-indigo-700/60
-          hover:border-orange-400/60 hover:shadow-[0_0_25px_rgba(249,115,22,0.35)]
-          hover-lift w-full overflow-hidden
-        "
+            relative panel-glass p-4 md:p-6 space-y-4
+            bg-slate-950/80 border-indigo-700/60
+            hover:border-orange-400 hover:shadow-[0_0_40px_rgba(249,115,22,0.6)]
+            transition-all duration-300 hover:scale-[1.02]
+            w-full overflow-hidden
+            "
             >
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 mb-6">
                     {/* Hero Score */}
@@ -311,7 +312,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                 {/* Strong / Missing / Nice-to-have columns */}
                 <div className="grid md:grid-cols-3 gap-4 text-xs">
                     {jobFit?.strongPoints?.length > 0 && (
-                        <div className="card-glass p-3 border-emerald-500/30 hover:border-emerald-300 hover:shadow-[0_0_12px_rgba(16,185,129,0.35)] hover-lift">
+                        <div className="card-glass p-3 border-emerald-500/30 hover:border-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all duration-300 hover:scale-105">
                             <div className="text-emerald-300 font-semibold mb-1 flex items-center gap-1.5">
                                 <CheckCircle className="w-3 h-3" />
                                 {t('dashboard.jobfit_strong', 'Strong Matches')}
@@ -325,7 +326,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                     )}
 
                     {jobFit?.missingFromCv?.length > 0 && (
-                        <div className="card-glass p-3 border-amber-500/40 hover:border-amber-300 hover:shadow-[0_0_12px_rgba(245,158,11,0.35)] hover-lift">
+                        <div className="card-glass p-3 border-amber-500/40 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] transition-all duration-300 hover:scale-105">
                             <div className="text-amber-300 font-semibold mb-1 flex items-center gap-1.5">
                                 <AlertCircle className="w-3 h-3" />
                                 {t('dashboard.jobfit_missing', 'Missing from CV')}
@@ -339,7 +340,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                     )}
 
                     {jobFit?.niceToHave?.length > 0 && (
-                        <div className="card-glass p-3 border-blue-500/40 hover:border-blue-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.35)] hover-lift">
+                        <div className="card-glass p-3 border-blue-500/40 hover:border-blue-400 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 hover:scale-105">
                             <div className="text-blue-300 font-semibold mb-1 flex items-center gap-1.5">
                                 <Info className="w-3 h-3" />
                                 {t('dashboard.jobfit_nice', 'Nice-to-have')}
@@ -353,7 +354,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
@@ -417,7 +418,7 @@ const SuggestedKeywordCard = ({ title, example, description, t }) => (
    COVER LETTER CARD
    ================================ */
 const CoverLetterCard = ({ onOpen, t }) => (
-    <div className="panel-glass p-4 md:p-6 space-y-4 animate-fade-in-up relative overflow-hidden group cursor-pointer w-full" onClick={onOpen}>
+    <div className="panel-glass p-4 md:p-6 space-y-4 animate-fade-in-up relative overflow-hidden group cursor-pointer w-full hover:border-indigo-400 hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all duration-300 hover:scale-[1.02]" onClick={onOpen}>
         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <Wand2 className="w-24 h-24 text-indigo-400" />
         </div>
@@ -457,7 +458,7 @@ const CoverLetterCard = ({ onOpen, t }) => (
    INTERVIEW PREP CARD (Dashboard Entry)
    ================================ */
 const InterviewPrepCard = ({ onOpen, t }) => (
-    <div className="panel-glass p-4 md:p-6 space-y-4 animate-fade-in-up relative overflow-hidden group cursor-pointer w-full" onClick={onOpen}>
+    <div className="panel-glass p-4 md:p-6 space-y-4 animate-fade-in-up relative overflow-hidden group cursor-pointer w-full hover:border-sky-400 hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] transition-all duration-300 hover:scale-[1.02]" onClick={onOpen}>
         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <MessageCircleQuestion className="w-24 h-24 text-sky-400" />
         </div>
@@ -530,7 +531,7 @@ const AnalysisDashboard = ({ result, jobDesc, onReset, onOpenInterviewPrep, onOp
 
             <div className="space-y-6">
                 {/* TOP SCORE PANEL */}
-                <div className="panel-glass p-4 space-y-4 animate-fade-in-up relative w-full overflow-hidden">
+                <div className="panel-glass p-4 space-y-4 animate-fade-in-up relative w-full overflow-hidden hover:border-emerald-400/60 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:scale-[1.01]">
                     <div className="flex items-center justify-center gap-4 md:gap-8 pt-2">
                         <ScoreBubble
                             label={t("dashboard.current", "Initial Score")}
@@ -557,7 +558,7 @@ const AnalysisDashboard = ({ result, jobDesc, onReset, onOpenInterviewPrep, onOp
                 </div>
 
                 {/* ATS ANALYSIS PANEL */}
-                <div className="panel-glass p-4 md:p-6 space-y-5 animate-fade-in-up w-full overflow-hidden">
+                <div className="panel-glass p-4 md:p-6 space-y-4 animate-fade-in-up w-full overflow-hidden hover:border-amber-400/60 hover:shadow-[0_0_30px_rgba(251,191,36,0.4)] transition-all duration-300 hover:scale-[1.01]">
                     <SectionHeader
                         icon={<BarChart3 className="h-4 w-4" />}
                         label={t("dashboard.ats_detailed_analysis", "ATS Detailed Analysis")}
