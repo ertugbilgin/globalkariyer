@@ -70,6 +70,41 @@ app.get('/api/admin/transactions', requireAdmin, adminController.getTransactions
 app.get('/api/admin/users/stats', requireAdmin, adminController.getUserStats);
 app.get('/api/admin/performance', requireAdmin, adminController.getPerformanceMetrics);
 
+// Stripe webhook endpoint
+const { handleCheckoutComplete } = require('./controllers/paymentController.cjs');
+
+app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  try {
+    let event;
+
+    // In production, verify signature with STRIPE_WEBHOOK_SECRET
+    // For local testing, we'll parse the body directly
+    if (process.env.STRIPE_WEBHOOK_SECRET) {
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } else {
+      // Local development - parse body without verification
+      event = JSON.parse(req.body.toString());
+    }
+
+    console.log('📨 Webhook received:', event.type);
+
+    // Handle checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      console.log('✅ Checkout completed:', session.id);
+      await handleCheckoutComplete(session);
+    }
+
+    res.json({ received: true });
+  } catch (err) {
+    console.error('❌ Webhook error:', err.message);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+});
+
 // Initialize cron jobs
 initCronJobs();
 
