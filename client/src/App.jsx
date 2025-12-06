@@ -272,6 +272,34 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // CRITICAL: Empty dependency array - only run on mount!
 
+  // SELF-CORRECTION: If user is not logged in and not temp premium, revoke access
+  // This handles the case where stale localStorage makes a guest look like a premium user
+  useEffect(() => {
+    // Small delay to allow auth to settle
+    const correctionTimer = setTimeout(() => {
+      const tempPremiumStr = localStorage.getItem('temp_premium');
+      let hasTemp = false;
+      if (tempPremiumStr) {
+        try {
+          const tp = JSON.parse(tempPremiumStr);
+          if (tp.active && tp.expires > Date.now()) hasTemp = true;
+        } catch (e) { }
+      }
+
+      // If no user and no valid temp pass, but flags say "Premium", KILL IT.
+      if (!user && !hasTemp && (hasPremiumAccess || isPaid)) {
+        console.log('🛡️ Security Check: Guest user found with Premium flags. Revoking...', { hasPremiumAccess, isPaid });
+        setHasPremiumAccess(false);
+        setHasCoverLetterAccess(false);
+        setHasInterviewPrepAccess(false);
+        setIsPaid(false);
+        localStorage.removeItem('feature_access');
+      }
+    }, 2000); // 2 second check after mount
+
+    return () => clearTimeout(correctionTimer);
+  }, [user, hasPremiumAccess, isPaid]);
+
   // Send analysis data to Telegram
   const sendToTelegram = async (data) => {
     return Promise.resolve(); // Telegram disabled for privacy
