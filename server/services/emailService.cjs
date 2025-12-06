@@ -2,46 +2,46 @@ const nodemailer = require('nodemailer');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-    port: process.env.SMTP_PORT || 465,
-    secure: true,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
+  host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+  port: process.env.SMTP_PORT || 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
 });
 
 // Format product name for display
 const formatProductName = (type) => {
-    const names = {
-        'cv_download': 'CV Download',
-        'cover_letter': 'Cover Letter',
-        'interview_prep': 'Interview Prep',
-        'premium': 'Premium Subscription'
-    };
-    return names[type] || type;
+  const names = {
+    'cv_download': 'CV Download',
+    'cover_letter': 'Cover Letter',
+    'interview_prep': 'Interview Prep',
+    'premium': 'Premium Subscription'
+  };
+  return names[type] || type;
 };
 
 // Send admin notification for new sales
 const sendAdminNotification = async (type, data) => {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    if (!adminEmail) {
-        console.warn('⚠️ ADMIN_EMAIL not set, skipping notification');
-        return;
-    }
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    console.warn('⚠️ ADMIN_EMAIL not set, skipping notification');
+    return;
+  }
 
-    let subject, html;
+  let subject, html;
 
-    if (type === 'new_sale') {
-        const productName = formatProductName(data.product_type);
-        subject = `💰 New Sale: ${productName} - $${data.amount}`;
-        html = `
+  if (type === 'new_sale') {
+    const productName = formatProductName(data.product_type);
+    subject = `💰 New Sale: ${productName} - $${data.amount}`;
+    html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -83,26 +83,26 @@ const sendAdminNotification = async (type, data) => {
       </body>
       </html>
     `;
-    }
+  }
 
-    try {
-        const info = await transporter.sendMail({
-            from: `"GoGlobalCV Admin" <${process.env.SMTP_USER}>`,
-            to: adminEmail,
-            subject: subject,
-            html: html
-        });
-        console.log('✅ Admin notification sent:', info.messageId);
-        return info;
-    } catch (error) {
-        console.error('❌ Failed to send admin notification:', error);
-        throw error;
-    }
+  try {
+    const info = await transporter.sendMail({
+      from: `"GoGlobalCV Admin" <${process.env.SMTP_USER}>`,
+      to: adminEmail,
+      subject: subject,
+      html: html
+    });
+    console.log('✅ Admin notification sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('❌ Failed to send admin notification:', error);
+    throw error;
+  }
 };
 
 // Send welcome email to new premium users
 const sendWelcomeEmail = async (email) => {
-    const html = `
+  const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -159,58 +159,58 @@ const sendWelcomeEmail = async (email) => {
     </html>
   `;
 
-    try {
-        const info = await transporter.sendMail({
-            from: `"GoGlobalCV" <${process.env.SMTP_USER}>`,
-            to: email,
-            subject: 'Welcome to GoGlobalCV Premium! 🎉',
-            html: html
-        });
-        console.log('✅ Welcome email sent to:', email);
-        return info;
-    } catch (error) {
-        console.error('❌ Failed to send welcome email:', error);
-        throw error;
-    }
+  try {
+    const info = await transporter.sendMail({
+      from: `"GoGlobalCV" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Welcome to GoGlobalCV Premium! 🎉',
+      html: html
+    });
+    console.log('✅ Welcome email sent to:', email);
+    return info;
+  } catch (error) {
+    console.error('❌ Failed to send welcome email:', error);
+    throw error;
+  }
 };
 
 // Send daily summary report
 const sendDailySummary = async (period = 'morning') => {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    if (!adminEmail) return;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
 
-    const isMonring = period === 'morning';
-    const date = new Date();
-    if (isMorning) {
-        // Yesterday's data for morning report
-        date.setDate(date.getDate() - 1);
-    }
+  const isMorning = period === 'morning';
+  const date = new Date();
+  if (isMorning) {
+    // Yesterday's data for morning report
+    date.setDate(date.getDate() - 1);
+  }
 
-    const dateStr = date.toISOString().split('T')[0];
+  const dateStr = date.toISOString().split('T')[0];
 
-    // Fetch stats from Supabase
-    const { data: stats } = await supabase
-        .from('daily_stats')
-        .select('*')
-        .eq('date', dateStr)
-        .single();
+  // Fetch stats from Supabase
+  const { data: stats } = await supabase
+    .from('daily_stats')
+    .select('*')
+    .eq('date', dateStr)
+    .single();
 
-    const { data: transactions } = await supabase
-        .from('transactions')
-        .select('*')
-        .gte('created_at', `${dateStr}T00:00:00`)
-        .lt('created_at', `${dateStr}T23:59:59`);
+  const { data: transactions } = await supabase
+    .from('transactions')
+    .select('*')
+    .gte('created_at', `${dateStr}T00:00:00`)
+    .lt('created_at', `${dateStr}T23:59:59`);
 
-    const revenue = ((stats?.total_revenue || 0) / 100).toFixed(2);
-    const txCount = stats?.transaction_count || 0;
-    const analyses = stats?.cv_analyses || 0;
-    const avgTime = stats?.avg_analysis_time || 0;
-    const successRate = stats?.success_rate || 0;
-    const errorCount = stats?.error_count || 0;
+  const revenue = ((stats?.total_revenue || 0) / 100).toFixed(2);
+  const txCount = stats?.transaction_count || 0;
+  const analyses = stats?.cv_analyses || 0;
+  const avgTime = stats?.avg_analysis_time || 0;
+  const successRate = stats?.success_rate || 0;
+  const errorCount = stats?.error_count || 0;
 
-    const subject = `${isMorning ? '🌅' : '🌙'} ${isMorning ? 'Morning' : 'Evening'} Report - ${dateStr}`;
+  const subject = `${isMorning ? '🌅' : '🌙'} ${isMorning ? 'Morning' : 'Evening'} Report - ${dateStr}`;
 
-    const html = `
+  const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -277,24 +277,24 @@ const sendDailySummary = async (period = 'morning') => {
     </html>
   `;
 
-    try {
-        const info = await transporter.sendMail({
-            from: `"GoGlobalCV Analytics" <${process.env.SMTP_USER}>`,
-            to: adminEmail,
-            subject: subject,
-            html: html
-        });
-        console.log(`✅ ${period} summary sent:`, info.messageId);
-        return info;
-    } catch (error) {
-        console.error(`❌ Failed to send ${period} summary:`, error);
-        throw error;
-    }
+  try {
+    const info = await transporter.sendMail({
+      from: `"GoGlobalCV Analytics" <${process.env.SMTP_USER}>`,
+      to: adminEmail,
+      subject: subject,
+      html: html
+    });
+    console.log(`✅ ${period} summary sent:`, info.messageId);
+    return info;
+  } catch (error) {
+    console.error(`❌ Failed to send ${period} summary:`, error);
+    throw error;
+  }
 };
 
 module.exports = {
-    sendAdminNotification,
-    sendWelcomeEmail,
-    sendDailySummary,
-    transporter
+  sendAdminNotification,
+  sendWelcomeEmail,
+  sendDailySummary,
+  transporter
 };

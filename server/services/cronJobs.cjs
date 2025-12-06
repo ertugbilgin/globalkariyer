@@ -40,7 +40,7 @@ const aggregateDailyStats = async (date) => {
         ? successfulAnalyses.reduce((sum, e) => sum + (e.metadata?.duration || 0), 0) / successfulAnalyses.length
         : 0;
 
-    const success Rate = cvAnalyses > 0 ? ((cvAnalyses - errorCount) / cvAnalyses) * 100 : 0;
+    const successRate = cvAnalyses > 0 ? ((cvAnalyses - errorCount) / cvAnalyses) * 100 : 0;
 
     // Upsert daily stats
     const { data, error } = await supabase
