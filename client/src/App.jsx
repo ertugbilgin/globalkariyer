@@ -179,6 +179,17 @@ function App() {
   }, [setResult, setJobDesc]);
 
   const openPaywall = (feature) => {
+    // CRITICAL: Save current state BEFORE opening paywall
+    // This ensures state is preserved even if PaywallModal doesn't open or user navigates directly to Stripe
+    if (result) {
+      sessionStorage.setItem('temp_analysis', JSON.stringify(result));
+      console.log('💾 Saved result to sessionStorage before paywall');
+    }
+    if (jobDesc) {
+      sessionStorage.setItem('temp_job_desc', jobDesc);
+      console.log('💾 Saved jobDesc to sessionStorage before paywall');
+    }
+
     setPaywallFeature(feature);
   };
 
