@@ -65,6 +65,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
       const session = event.data.object;
       console.log('✅ Checkout completed:', session.id);
       await handleCheckoutComplete(session);
+    } else if (event.type === 'charge.refunded') {
+      const charge = event.data.object;
+      console.log('💸 Refund detected:', charge.id);
+      await require('./controllers/paymentController.cjs').handleRefund(charge);
     }
 
     res.json({ received: true });

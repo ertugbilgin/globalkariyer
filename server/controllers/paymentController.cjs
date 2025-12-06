@@ -354,6 +354,92 @@ const createPortalSession = async (req, res) => {
     }
 };
 
+// Webhook handler for refunds
+const handleRefund = async (charge) => {
+    try {
+        console.log('💸 Processing Refund:', charge.id);
+        const paymentIntentId = charge.payment_intent;
+
+        if (!paymentIntentId) {
+            console.log('⚠️ No payment intent for refund');
+            return;
+        }
+
+        // We stored payment_intent_id implicitly or via metadata? 
+        // Actually our transactions table has stripe_session_id.
+        // We need to match charge -> payment_intent -> session? 
+        // Or updated logic: when charge.refunded comes, we usually have payment_intent. 
+        // Let's first try to find by payment_intent or related session.
+
+        // BETTER: Use charge.payment_intent to match if we stored it?
+        // Wait, our `transactions` table schema might rely on stripe_session_id. 
+        // Let's try to query by stripe_session_id if we can get it from payment intent, 
+        // OR simply add `stripe_payment_intent_id` to transactions if missing.
+
+        // For now, let's assume we can query via metadata or just search.
+        // If we don't have payment_intent in DB, we rely on `stripe_customer_id` + amount? No risky.
+
+        // Plan B: Retrieve Session from Payment Intent?
+        // Stripe doesn't easily link back PI -> Session without expansion.
+
+        // SIMPLER APPROACH:
+        // Update user status directly if we can identify user.
+        const customerId = charge.customer;
+        const email = charge.billing_details?.email; // often null in events
+
+        // Let's try to find transaction by `stripe_customer_id` AND `amount`.
+        // Or if we stored payment_intent.
+
+        // Let's retrieve the PaymentIntent to see if it has metadata
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        // Usually checkout sessions add metadata to PI.
+
+        // If we can't find exact transaction easily, let's log it.
+        // BUT for MVP:
+        // Let's look up transaction by stripe_customer_id and status='completed' 
+        // ordered by created_at desc (most recent).
+
+        const amountRefunded = charge.amount_refunded / 100;
+
+        // Try to update transaction status
+        // We need a reliable way. Let's assume we can try matching by customer_id and amount for now 
+        // if we didn't store PI. 
+        // (Checking schema: transactions has stripe_session_id, stripe_customer_id).
+
+        const { data: transactions } = await supabase
+            .from('transactions')
+            .select('*')
+            .eq('stripe_customer_id', customerId)
+            .eq('amount', amountRefunded) // Match amount
+            .eq('status', 'completed')
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (transactions && transactions.length > 0) {
+            const tx = transactions[0];
+            await supabase
+                .from('transactions')
+                .update({ status: 'refunded', refunded_at: new Date().toISOString() })
+                .eq('id', tx.id);
+            console.log(`✅ Transaction ${tx.id} marked as REFUNDED`);
+
+            // If it was Premium, revoke user status
+            if (tx.product_type === 'premium') {
+                await supabase
+                    .from('users')
+                    .update({ is_premium: false })
+                    .eq('stripe_customer_id', customerId);
+                console.log(`📉 Premium access revoked for customer ${customerId}`);
+            }
+        } else {
+            console.log('⚠️ Could not find matching completed transaction for refund');
+        }
+
+    } catch (error) {
+        console.error('Refund handler error:', error);
+    }
+};
+
 module.exports = {
     createCvDownloadSession,
     createCoverLetterSession,
@@ -361,5 +447,6 @@ module.exports = {
     createPremiumSession,
     handleCheckoutComplete,
     verifyPayment,
-    createPortalSession
+    createPortalSession,
+    handleRefund
 };
