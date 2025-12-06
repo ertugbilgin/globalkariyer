@@ -110,16 +110,21 @@ function App() {
 
         // CHECK FOR ONE-TIME PURCHASES (CV Download, etc.)
         // This ensures users who bought a single feature can still access it after refresh/login
+        // BUT we limit this to recent purchases (e.g. 30 days) so it doesn't last forever.
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
         const { data: transactions, error: txError } = await supabase
           .from('transactions')
-          .select('product_type, status')
+          .select('product_type, status, created_at')
           .eq('email', email)
           .eq('status', 'completed')
           .eq('product_type', 'cv_download')
+          .gte('created_at', thirtyDaysAgo.toISOString()) // Valid for 30 days
           .limit(1);
 
         if (!txError && transactions && transactions.length > 0) {
-          console.log('✅ Found valid one-time purchase: cv_download');
+          console.log('✅ Found valid recent one-time purchase: cv_download');
           setIsPaid(true);
         } else {
           setIsPaid(false);
@@ -128,9 +133,10 @@ function App() {
         // Check for other feature unlocks if needed (cover_letter, interview_prep)
         const { data: otherTx } = await supabase
           .from('transactions')
-          .select('product_type')
+          .select('product_type, created_at')
           .eq('email', email)
           .eq('status', 'completed')
+          .gte('created_at', thirtyDaysAgo.toISOString()) // Valid for 30 days
           .in('product_type', ['cover_letter', 'interview_prep']);
 
         if (otherTx) {
