@@ -153,6 +153,7 @@ function App() {
         onClose={() => setIsCoverLetterOpen(false)}
         result={result}
         jobDesc={jobDesc}
+        cvText={cvText}
         onOpenPaywall={() => openPaywall('cover_letter')}
         hasAccess={hasCoverLetterAccess || hasPremiumAccess}
       />

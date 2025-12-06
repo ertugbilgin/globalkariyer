@@ -3,7 +3,7 @@ import { Loader2, FileText, Copy, Check, X, Wand2, FileDown, Lock } from "lucide
 import { useTranslation } from 'react-i18next';
 import { generateCoverLetterDoc } from '../lib/docxGenerator';
 
-export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, onOpenPaywall, hasAccess }) {
+export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvText, onOpenPaywall, hasAccess }) {
     const { t, i18n } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [coverLetter, setCoverLetter] = useState("");
