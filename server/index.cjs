@@ -96,11 +96,14 @@ app.post('/interview-prep', requireAuth, require('./controllers/interviewPrepCon
 app.post('/job-match', requireAuth, require('./controllers/jobMatchController.cjs').analyzeJobMatch);
 
 // Payment routes
-app.post('/pay/cv-download', createCvDownloadSession);
-app.post('/pay/cover-letter', createCoverLetterSession);
-app.post('/pay/interview-prep', createInterviewPrepSession);
-app.post('/pay/premium', createPremiumSession);
-app.post('/api/create-portal-session', createPortalSession);
+const { optionalAuth } = require('./middleware/optionalAuth.cjs');
+
+// Payment routes (with optional auth for tracking logged-in users)
+app.post('/pay/cv-download', optionalAuth, createCvDownloadSession);
+app.post('/pay/cover-letter', optionalAuth, createCoverLetterSession);
+app.post('/pay/interview-prep', optionalAuth, createInterviewPrepSession);
+app.post('/pay/premium', optionalAuth, createPremiumSession);
+app.post('/api/create-portal-session', optionalAuth, createPortalSession);
 
 app.get('/api/verify-payment', require('./controllers/paymentController.cjs').verifyPayment);
 
