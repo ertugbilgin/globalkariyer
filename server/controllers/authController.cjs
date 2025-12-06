@@ -170,12 +170,7 @@ const signOut = async (req, res) => {
     }
 };
 
-module.exports = {
-    sendMagicLink,
-    getCurrentUser,
-    signOut,
-    checkAccess
-};
+
 
 /**
  * Check user access rights
@@ -263,4 +258,11 @@ const checkAccess = async (req, res) => {
         console.error('Check access error:', error);
         res.status(500).json({ error: 'Failed to check access' });
     }
+};
+
+module.exports = {
+    sendMagicLink,
+    getCurrentUser,
+    signOut,
+    checkAccess
 };
