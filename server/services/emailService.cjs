@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
@@ -6,17 +6,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Email transporter setup (Auto-detect SSL/TLS based on port)
-const smtpPort = parseInt(process.env.SMTP_PORT) || 465;
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-  port: smtpPort,
-  secure: smtpPort === 465, // true for 465 (SSL), false for 587/2525 (TLS)
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+// Initialize Resend with API Key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Format product name for display
 const formatProductName = (type) => {
@@ -87,14 +78,14 @@ const sendAdminNotification = async (type, data) => {
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: `"GoGlobalCV Admin" <${process.env.SMTP_USER}>`,
+    const data = await resend.emails.send({
+      from: 'GoGlobalCV Admin <admin@goglobalcv.com>',
       to: adminEmail,
       subject: subject,
       html: html
     });
-    console.log('✅ Admin notification sent:', info.messageId);
-    return info;
+    console.log('✅ Admin notification sent:', data.id);
+    return data;
   } catch (error) {
     console.error('❌ Failed to send admin notification:', error);
     throw error;
@@ -161,14 +152,14 @@ const sendWelcomeEmail = async (email) => {
   `;
 
   try {
-    const info = await transporter.sendMail({
-      from: `"GoGlobalCV" <${process.env.SMTP_USER}>`,
+    const data = await resend.emails.send({
+      from: 'GoGlobalCV <welcome@goglobalcv.com>',
       to: email,
       subject: 'Welcome to GoGlobalCV Premium! 🎉',
       html: html
     });
     console.log('✅ Welcome email sent to:', email);
-    return info;
+    return data;
   } catch (error) {
     console.error('❌ Failed to send welcome email:', error);
     throw error;
@@ -279,14 +270,14 @@ const sendDailySummary = async (period = 'morning') => {
   `;
 
   try {
-    const info = await transporter.sendMail({
-      from: `"GoGlobalCV Analytics" <${process.env.SMTP_USER}>`,
+    const data = await resend.emails.send({
+      from: 'GoGlobalCV Analytics <analytics@goglobalcv.com>',
       to: adminEmail,
       subject: subject,
       html: html
     });
-    console.log(`✅ ${period} summary sent:`, info.messageId);
-    return info;
+    console.log(`✅ ${period} summary sent:`, data.id);
+    return data;
   } catch (error) {
     console.error(`❌ Failed to send ${period} summary:`, error);
     throw error;
@@ -296,6 +287,5 @@ const sendDailySummary = async (period = 'morning') => {
 module.exports = {
   sendAdminNotification,
   sendWelcomeEmail,
-  sendDailySummary,
-  transporter
+  sendDailySummary
 };
