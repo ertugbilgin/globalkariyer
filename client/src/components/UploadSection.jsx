@@ -99,7 +99,7 @@ const UploadSection = ({ file, setFile, jobDesc, setJobDesc, loading, isAiBusy, 
                 <button
                     onClick={handleAnalyzeClick}
                     disabled={loading}
-                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white active:scale-95'}`}
+                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 ${loading ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-600 text-white active:scale-95'}`}
                 >
                     {t('upload.analyze_button')} ✨
                 </button>
