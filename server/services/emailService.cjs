@@ -284,8 +284,70 @@ const sendDailySummary = async (period = 'morning') => {
   }
 };
 
+// Send critical system alert
+const sendAdminAlert = async (title, error, context = {}) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: #ef4444; color: white; padding: 20px; border-radius: 8px; }
+        .content { padding: 20px; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; margin-top: 20px; }
+        .error-box { background: #1f2937; color: #f87171; padding: 15px; border-radius: 6px; font-family: monospace; overflow-x: auto; margin: 15px 0; }
+        .context { margin-top: 15px; font-size: 14px; color: #374151; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2 style="margin: 0;">🚨 Critical System Alert</h2>
+          <p style="margin: 5px 0 0 0;">${title}</p>
+        </div>
+        
+        <div class="content">
+          <h3>Error Details</h3>
+          <div class="error-box">
+            ${error?.message || error || 'Unknown Error'}
+            ${error?.stack ? `<br><br>${error.stack.replace(/\n/g, '<br>')}` : ''}
+          </div>
+
+          ${Object.keys(context).length > 0 ? `
+            <div class="context">
+              <strong>Context:</strong>
+              <pre>${JSON.stringify(context, null, 2)}</pre>
+            </div>
+          ` : ''}
+          
+          <p style="font-size: 12px; color: #6b7280; margin-top: 20px;">
+            Time: ${new Date().toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' })}
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    await resend.emails.send({
+      from: 'GoGlobalCV Alerts <alerts@goglobalcv.com>',
+      to: adminEmail,
+      subject: `🚨 ALERT: ${title}`,
+      html: html
+    });
+    console.log('🚨 Critical alert sent to admin');
+  } catch (err) {
+    console.error('Failed to send admin alert:', err);
+  }
+};
+
 module.exports = {
   sendAdminNotification,
   sendWelcomeEmail,
-  sendDailySummary
+  sendDailySummary,
+  sendAdminAlert
 };

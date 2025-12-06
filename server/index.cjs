@@ -79,6 +79,7 @@ app.use(express.json());
 
 // Health check
 app.get('/', (req, res) => res.send('✅ Motor v52.0 (Strict Mode) Hazır!'));
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', uptime: process.uptime() }));
 
 // Analysis routes
 app.post('/analyze', upload.any(), handleUploadError, sanitizeInput, analyzeCV);
