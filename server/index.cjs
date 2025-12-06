@@ -105,8 +105,9 @@ app.post('/api/create-portal-session', createPortalSession);
 app.get('/api/verify-payment', require('./controllers/paymentController.cjs').verifyPayment);
 
 // Access Check (Server-side verification)
-const { checkAccess } = require('./controllers/authController.cjs');
+const { checkAccess, verifySession } = require('./controllers/authController.cjs');
 app.get('/api/auth/check-access', requireAuth, checkAccess);
+app.post('/api/auth/verify-session', verifySession);
 
 // Admin routes
 app.get('/api/admin/analytics/overview', requireAdmin, adminController.getAnalyticsOverview);

@@ -47,22 +47,44 @@ function App() {
   const [user, setUser] = useState(null);
 
   // Check active session on mount
+  // Check active session on mount
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
         console.log('✅ User session found:', session.user.email);
-        verifyPremiumStatus(session.user.email);
+        verifyUserSession(session);
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) verifyPremiumStatus(session.user.email);
+      if (session?.user) verifyUserSession(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Sync user with database (Create if not exists)
+  const verifyUserSession = async (session) => {
+    try {
+      if (!session?.access_token) return;
+
+      // 1. Sync User (Create DB record if missing)
+      await fetch(`${API_URL}/api/auth/verify-session`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      // 2. Check Access
+      verifyPremiumStatus(session.user.email);
+    } catch (err) {
+      console.error('Session sync error:', err);
+    }
+  };
 
   // Verify premium status from backend (or simple check for now)
   // In a real app, you'd fetch /api/user/me or similar
