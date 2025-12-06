@@ -4,7 +4,7 @@ import { isInAppBrowser } from '../lib/inAppBrowser';
 import { useTranslation } from 'react-i18next';
 import LoginModal from './LoginModal';
 
-const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, onReset, user, onLoginSuccess, onLogout, isLoginModalOpen, setIsLoginModalOpen, onManageSubscription }) => {
+const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, onReset, user, isPremium, onLoginSuccess, onLogout, isLoginModalOpen, setIsLoginModalOpen, onManageSubscription }) => {
     const { t, i18n } = useTranslation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -64,10 +64,17 @@ const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, on
                             {user ? (
                                 <div className="flex items-center gap-3">
                                     <div className="flex flex-col items-end">
-                                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold shadow-sm shadow-amber-500/10">
-                                            <span className="text-sm">👑</span>
-                                            PREMIUM
-                                        </div>
+                                        {isPremium ? (
+                                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold shadow-sm shadow-amber-500/10">
+                                                <span className="text-sm">👑</span>
+                                                PREMIUM
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                                <User className="w-3 h-3" />
+                                                Free Member
+                                            </div>
+                                        )}
                                         <button
                                             onClick={onManageSubscription}
                                             className="text-[10px] text-slate-400 hover:text-white underline mt-1 transition-colors"
@@ -165,10 +172,17 @@ const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, on
                             {user ? (
                                 <div className="space-y-3">
                                     <div className="text-center">
-                                        <div className="inline-flex items-center justify-center gap-2 text-amber-400 text-sm font-bold bg-amber-500/10 py-2 px-4 rounded-lg border border-amber-500/20 mb-2">
-                                            <span className="text-lg">👑</span>
-                                            PREMIUM MEMBER
-                                        </div>
+                                        {isPremium ? (
+                                            <div className="inline-flex items-center justify-center gap-2 text-amber-400 text-sm font-bold bg-amber-500/10 py-2 px-4 rounded-lg border border-amber-500/20 mb-2">
+                                                <span className="text-lg">👑</span>
+                                                PREMIUM MEMBER
+                                            </div>
+                                        ) : (
+                                            <div className="inline-flex items-center justify-center gap-2 text-slate-400 text-sm font-bold bg-slate-800/50 py-2 px-4 rounded-lg border border-slate-700/50 mb-2">
+                                                <User className="w-4 h-4" />
+                                                FREE MEMBER
+                                            </div>
+                                        )}
                                         <button
                                             onClick={() => { onManageSubscription(); setIsMobileMenuOpen(false); }}
                                             className="block w-full text-center text-xs text-slate-400 hover:text-white underline py-1"

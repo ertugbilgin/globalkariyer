@@ -579,6 +579,7 @@ function App() {
         onOpenInterviewPrep={() => setIsInterviewPrepOpen(true)}
         onReset={() => { setResult(null); setIsPaid(false); }}
         user={user}
+        isPremium={hasPremiumAccess}
         onLoginSuccess={handleLoginSuccess}
         onLogout={handleLogout}
         isLoginModalOpen={isLoginModalOpen}
