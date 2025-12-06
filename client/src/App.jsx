@@ -66,15 +66,58 @@ function App() {
 
   // Verify premium status from backend (or simple check for now)
   // In a real app, you'd fetch /api/user/me or similar
+  /* 
+   * Verify premium status by checking the 'users' table in Supabase.
+   * This replaces the MVP logic that blindly granted access.
+   */
   const verifyPremiumStatus = async (email) => {
-    // Ideally call backend to check 'is_premium' flag in 'users' table
-    // For now, we trust the flow or assume login = check db
-    // We already have logic in verifyPaymentAndGrantTempAccess but that's for temp
-    // Let's at least ensure they have access if they are logged in
-    setHasPremiumAccess(true); // Grant access to logged in users (simplified for MVP)
-    setHasCoverLetterAccess(true);
-    setHasInterviewPrepAccess(true);
-    setIsPaid(true);
+    if (!email) return;
+
+    try {
+      console.log('🔍 Verifying premium status for:', email);
+
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('is_premium, stripe_customer_id')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        // If user not found (new login), they are NOT premium.
+        // We don't error out, just default to free tier.
+        console.log('ℹ️ User verification: User likely new or not in DB yet (Free Tier)');
+        setHasPremiumAccess(false);
+        setHasCoverLetterAccess(false);
+        setHasInterviewPrepAccess(false);
+        setIsPaid(false);
+        return;
+      }
+
+      if (user && user.is_premium) {
+        console.log('👑 Premium User Verified!');
+        setHasPremiumAccess(true);
+        setIsPaid(true);
+        // Premium users get everything
+        setHasCoverLetterAccess(true);
+        setHasInterviewPrepAccess(true);
+      } else {
+        console.log('👤 Standard User Verified (Free Tier)');
+        // Explicitly set to false to override any potential lingering local state if needed,
+        // though usually we relying on 'initialAccess' state. 
+        // Safer to be explicit:
+        setHasPremiumAccess(false);
+
+        // Note: Use localStorage check for specific feature unlocks if we supported al-a-carte persistence 
+        // across devices without 'is_premium'. 
+        // For now, assume backend 'is_premium' is the master record for "Subscription".
+        // Use local storage for "guest" purchases only which is handled in useEffect.
+      }
+
+    } catch (err) {
+      console.error('❌ Verify premium failed:', err);
+      // Default to safe state
+      setHasPremiumAccess(false);
+    }
   };
 
   const handleLoginSuccess = (user) => {
