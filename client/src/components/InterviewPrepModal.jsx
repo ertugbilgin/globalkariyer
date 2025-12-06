@@ -65,6 +65,8 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
     const handleGenerate = async () => {
         // Enforce Paywall BEFORE generation
         if (!isPaid && onOpenPaywall) {
+            // Save current JD before redirecting to payment
+            sessionStorage.setItem('temp_job_desc', localJobDesc);
             onOpenPaywall();
             return;
         }

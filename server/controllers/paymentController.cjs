@@ -50,7 +50,7 @@ const createStripeSession = async (req, res, { priceData, mode = 'payment', succ
                 price_data: priceData,
                 quantity: 1,
             }],
-            success_url: `${FRONTEND_URL}${successPath}${successPath.includes('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+            success_url: `${FRONTEND_URL}/?payment_success=true&feature=${productType}`,
             cancel_url: `${FRONTEND_URL}${cancelPath}`,
             metadata: { type: productType }
         };

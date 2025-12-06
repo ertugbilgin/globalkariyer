@@ -48,6 +48,33 @@ function App() {
 
   const printRef = useRef(null);
 
+  // Persist feature access to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('feature_access', JSON.stringify({
+      hasCoverLetterAccess,
+      hasInterviewPrepAccess,
+      hasPremiumAccess,
+      isPaid
+    }));
+  }, [hasCoverLetterAccess, hasInterviewPrepAccess, hasPremiumAccess, isPaid]);
+
+  // Restore feature access on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('feature_access');
+    if (saved) {
+      try {
+        const { hasCoverLetterAccess: cl, hasInterviewPrepAccess: ip, hasPremiumAccess: pm, isPaid: pd } = JSON.parse(saved);
+        setHasCoverLetterAccess(cl || false);
+        setHasInterviewPrepAccess(ip || false);
+        setHasPremiumAccess(pm || false);
+        setIsPaid(pd || false);
+        console.log('✅ Restored feature access from localStorage');
+      } catch (e) {
+        console.error('Failed to restore feature access:', e);
+      }
+    }
+  }, []);
+
   // Check for payment success and restore analysis state
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -58,52 +85,61 @@ function App() {
       // Restore saved analysis state
       const savedAnalysis = sessionStorage.getItem('temp_analysis');
       const savedJobDesc = sessionStorage.getItem('temp_job_desc');
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentSuccess = urlParams.get('payment_success');
 
-      if (savedAnalysis) {
-        try {
-          const parsedResult = JSON.parse(savedAnalysis);
-          setResult(parsedResult);
-          if (savedJobDesc) {
-            setJobDesc(savedJobDesc);
+      if (paymentSuccess) {
+        // Restore analysis state
+        const savedResult = sessionStorage.getItem('result');
+        const savedJobDesc = sessionStorage.getItem('jobDesc');
+
+        if (savedResult) {
+          try {
+            const parsedResult = JSON.parse(savedResult);
+            setResult(parsedResult);
+            console.log('✅ Analysis state restored after payment');
+          } catch (e) {
+            console.error('Failed to parse saved result:', e);
           }
-
-          // Clean up session storage
-          sessionStorage.removeItem('temp_analysis');
-          sessionStorage.removeItem('temp_job_desc');
-
-          console.log('✅ Analysis state restored after payment');
-        } catch (e) {
-          console.error('Failed to restore analysis:', e);
         }
-      }
 
-      // Unlock purchased feature and open appropriate modal
-      switch (successType) {
-        case 'cv_download':
-          setIsPaid(true);
-          alert('🎉 Congratulations! Your optimized CV is ready to download!');
-          break;
-        case 'cover_letter':
-          setHasCoverLetterAccess(true);
-          setIsCoverLetterOpen(true); // Open modal automatically
-          alert('🎉 Congratulations! You now have unlimited access to Cover Letter generation!');
-          break;
-        case 'interview_prep':
-          setHasInterviewPrepAccess(true);
-          setIsInterviewPrepOpen(true); // Open modal automatically
-          alert('🎉 Congratulations! You now have unlimited access to Interview Prep!');
-          break;
-        case 'premium':
-          setHasPremiumAccess(true);
-          setIsPaid(true);
-          setHasCoverLetterAccess(true);
-          setHasInterviewPrepAccess(true);
-          alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
-          break;
-      }
+        if (savedJobDesc) {
+          setJobDesc(savedJobDesc);
+          console.log('✅ Job description restored:', savedJobDesc.substring(0, 50) + '...');
+        }
 
-      // Clean URL
-      window.history.replaceState({}, document.title, "/");
+        // Get purchased feature from URL
+        const purchasedFeature = urlParams.get('feature');
+        console.log('💳 Purchased feature:', purchasedFeature);
+
+        // Unlock the feature user just paid for
+        switch (purchasedFeature) {
+          case 'cv_download':
+            setIsPaid(true); // Mark as paid for CV download
+            alert('🎉 Thank you! Your optimized CV download is ready!');
+            break;
+          case 'cover_letter':
+            setHasCoverLetterAccess(true);
+            setIsCoverLetterOpen(true); // Open modal automatically
+            alert('🎉 Congratulations! You now have access to Cover Letter generation!');
+            break;
+          case 'interview_prep':
+            setHasInterviewPrepAccess(true);
+            setIsInterviewPrepOpen(true); // Open modal automatically
+            alert('🎉 Congratulations! You now have access to Interview Prep!');
+            break;
+          case 'premium':
+            setHasPremiumAccess(true);
+            setIsPaid(true); // Premium includes CV download
+            setHasCoverLetterAccess(true);
+            setHasInterviewPrepAccess(true);
+            alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
+            break;
+        }
+
+        // Clean URL
+        window.history.replaceState({}, document.title, "/");
+      }
     }
   }, [setResult, setJobDesc]);
 
@@ -165,7 +201,7 @@ function App() {
         result={result}
         jobDesc={jobDesc}
         onOpenPaywall={() => openPaywall('interview_prep')}
-        hasAccess={hasInterviewPrepAccess || hasPremiumAccess}
+        isPaid={hasInterviewPrepAccess || hasPremiumAccess}
       />
 
       {/* GLOBAL JOB MATCH MODAL */}

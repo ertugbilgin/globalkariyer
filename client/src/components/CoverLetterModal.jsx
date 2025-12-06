@@ -28,6 +28,8 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
 
         // Enforce Paywall BEFORE generation
         if (!hasAccess && onOpenPaywall) {
+            // Save current JD before redirecting to payment
+            sessionStorage.setItem('temp_job_desc', localJobDesc);
             onOpenPaywall();
             return;
         }
