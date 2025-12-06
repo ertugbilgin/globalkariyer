@@ -35,7 +35,12 @@ function App() {
   } = useAnalyze();
 
   const [isPaid, setIsPaid] = useState(false);
-  const [paywallFeature, setPaywallFeature] = useState(null); // 'cv', 'cover_letter', 'interview_prep'
+  const [paywallFeature, setPaywallFeature] = useState(null);
+
+  // Feature unlock states
+  const [hasCoverLetterAccess, setHasCoverLetterAccess] = useState(false);
+  const [hasInterviewPrepAccess, setHasInterviewPrepAccess] = useState(false);
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
 
   const [isCoverLetterOpen, setIsCoverLetterOpen] = useState(false);
   const [isInterviewPrepOpen, setIsInterviewPrepOpen] = useState(false);
@@ -72,10 +77,33 @@ function App() {
         }
       }
 
+      // Unlock purchased feature and open appropriate modal
+      switch (successType) {
+        case 'cv_download':
+          setIsPaid(true);
+          alert('🎉 Congratulations! Your optimized CV is ready to download!');
+          break;
+        case 'cover_letter':
+          setHasCoverLetterAccess(true);
+          setIsCoverLetterOpen(true); // Open modal automatically
+          alert('🎉 Congratulations! You now have unlimited access to Cover Letter generation!');
+          break;
+        case 'interview_prep':
+          setHasInterviewPrepAccess(true);
+          setIsInterviewPrepOpen(true); // Open modal automatically
+          alert('🎉 Congratulations! You now have unlimited access to Interview Prep!');
+          break;
+        case 'premium':
+          setHasPremiumAccess(true);
+          setIsPaid(true);
+          setHasCoverLetterAccess(true);
+          setHasInterviewPrepAccess(true);
+          alert('🎉 Welcome to Premium! You now have unlimited access to all features!');
+          break;
+      }
+
       // Clean URL
       window.history.replaceState({}, document.title, "/");
-
-      if (successType === 'cv_download') setIsPaid(true);
     }
   }, [setResult, setJobDesc]);
 
@@ -123,30 +151,20 @@ function App() {
       <CoverLetterModal
         isOpen={isCoverLetterOpen}
         onClose={() => setIsCoverLetterOpen(false)}
-        cvText={cvText}
-        jobDescription={jobDesc}
-        onJobDescUpdate={(newJD) => {
-          setJobDesc(newJD);
-          calculateJobMatch(cvText, newJD);
-        }}
+        result={result}
+        jobDesc={jobDesc}
         onOpenPaywall={() => openPaywall('cover_letter')}
-        isPaid={isPaid}
+        hasAccess={hasCoverLetterAccess || hasPremiumAccess}
       />
 
       {/* GLOBAL INTERVIEW PREP MODAL */}
       <InterviewPrepModal
         isOpen={isInterviewPrepOpen}
         onClose={() => setIsInterviewPrepOpen(false)}
-        cvText={cvText}
-        jobDescription={jobDesc}
-        onJobDescUpdate={(newJD) => {
-          setJobDesc(newJD);
-          // We don't auto-generate interview prep, but we update the JD context
-          // and trigger job match score update if needed
-          calculateJobMatch(cvText, newJD);
-        }}
+        result={result}
+        jobDesc={jobDesc}
         onOpenPaywall={() => openPaywall('interview_prep')}
-        isPaid={isPaid}
+        hasAccess={hasInterviewPrepAccess || hasPremiumAccess}
       />
 
       {/* GLOBAL JOB MATCH MODAL */}
