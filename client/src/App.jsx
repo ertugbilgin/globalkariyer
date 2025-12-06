@@ -105,16 +105,40 @@ function App() {
         setShowUnlockToast(true);
         setTimeout(() => setShowUnlockToast(false), 5000);
       } else {
-        console.log('👤 Standard User Verified (Free Tier)');
-        // Explicitly set to false to override any potential lingering local state if needed,
-        // though usually we relying on 'initialAccess' state. 
-        // Safer to be explicit:
+        console.log('👤 Standard User Verified (Checking for one-time purchases...)');
         setHasPremiumAccess(false);
 
-        // Note: Use localStorage check for specific feature unlocks if we supported al-a-carte persistence 
-        // across devices without 'is_premium'. 
-        // For now, assume backend 'is_premium' is the master record for "Subscription".
-        // Use local storage for "guest" purchases only which is handled in useEffect.
+        // CHECK FOR ONE-TIME PURCHASES (CV Download, etc.)
+        // This ensures users who bought a single feature can still access it after refresh/login
+        const { data: transactions, error: txError } = await supabase
+          .from('transactions')
+          .select('product_type, status')
+          .eq('email', email)
+          .eq('status', 'completed')
+          .eq('product_type', 'cv_download')
+          .limit(1);
+
+        if (!txError && transactions && transactions.length > 0) {
+          console.log('✅ Found valid one-time purchase: cv_download');
+          setIsPaid(true);
+        } else {
+          setIsPaid(false);
+        }
+
+        // Check for other feature unlocks if needed (cover_letter, interview_prep)
+        const { data: otherTx } = await supabase
+          .from('transactions')
+          .select('product_type')
+          .eq('email', email)
+          .eq('status', 'completed')
+          .in('product_type', ['cover_letter', 'interview_prep']);
+
+        if (otherTx) {
+          otherTx.forEach(tx => {
+            if (tx.product_type === 'cover_letter') setHasCoverLetterAccess(true);
+            if (tx.product_type === 'interview_prep') setHasInterviewPrepAccess(true);
+          });
+        }
       }
 
     } catch (err) {
