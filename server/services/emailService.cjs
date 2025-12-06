@@ -191,8 +191,6 @@ const sendDailySummary = async (period = 'morning') => {
     .from('transactions')
     .select('*')
     .gte('created_at', `${dateStr}T00:00:00`)
-    .select('*')
-    .gte('created_at', `${dateStr}T00:00:00`)
     .lt('created_at', `${dateStr}T23:59:59`);
 
   // NEW: Fetch AI Usage Stats

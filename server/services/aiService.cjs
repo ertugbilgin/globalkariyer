@@ -231,30 +231,6 @@ ${(lang === "tr") ? "Örnek JSON şeması:" : (lang === "zh" || lang === "cn") ?
     return { data, usage };
 }
 
-async function analyzeCV({ cvText, jobDescription, language }) {
-    const isTr = (language || '').toLowerCase() === "tr";
 
-    // ... (rest of the function logic if I could see it)
-    // Since I can't see the analyzeCV function in the previous view_file output (it seemed to end at line 163 with module.exports), 
-    // I suspect the file is longer or I missed something. 
-    // However, the user said "suggestions vs other texts remain in English". 
-    // This implies the main analysis prompt might not be fully localized or the response isn't.
-    // I will first search for the analyzeCV function to be sure.
-
-    // WAIT, I cannot replace content I haven't seen. 
-    // I will skip this tool call for now and use search_in_file or view_file again to find the main analysis function.
-    // But I can't do that inside a tool block.
-    // I will assume I need to find `analyzeCV` or similar.
-    // The view_file output showed `module.exports = { callGeminiRaw, generateCoverLetter, generateInterviewPrep };` at the end.
-    // This suggests `analyzeCV` might NOT be in this file, or I missed it.
-    // Let me check `server/controllers/analyzeController.js` or similar if it exists.
-    // Or maybe it is in `aiService.cjs` but I missed it?
-    // The view_file said "Total Lines: 162". And showed lines 1-162.
-    // So `analyzeCV` is NOT in `aiService.cjs`.
-    // I need to find where the main analysis happens.
-    // I'll check `server/index.cjs` or `server/controllers` to find the main analysis endpoint.
-
-    return JSON.parse(cleanJson);
-}
 
 module.exports = { callGeminiRaw, generateCoverLetter, generateInterviewPrep };
