@@ -6,11 +6,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Email transporter setup (Port 465 SSL - worked yesterday)
+// Email transporter setup (Auto-detect SSL/TLS based on port)
+const smtpPort = parseInt(process.env.SMTP_PORT) || 465;
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-  port: parseInt(process.env.SMTP_PORT) || 465,
-  secure: true, // SSL
+  port: smtpPort,
+  secure: smtpPort === 465, // true for 465 (SSL), false for 587/2525 (TLS)
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
