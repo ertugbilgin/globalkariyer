@@ -1,9 +1,27 @@
+export const initializeGA = (measurementId) => {
+    if (!measurementId) return;
+
+    // Inject Google Analytics script dynamically
+    const script = document.createElement('script');
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', measurementId);
+
+    console.log(`✅ Google Analytics Initialized: ${measurementId}`);
+};
+
 export const trackEvent = (eventName, params = {}) => {
     if (window.gtag) {
         window.gtag('event', eventName, params);
         console.log(`📊 GA Event: ${eventName}`, params);
     } else {
-        console.warn("Google Analytics not initialized");
+        // console.warn("Google Analytics not initialized"); // Suppress warning to avoid noise before consent
     }
 };
 

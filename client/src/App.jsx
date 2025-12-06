@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 import './index.css'
 import './i18n'; // Initialize i18n
 import { useReactToPrint } from 'react-to-print'
+import { Toaster } from 'react-hot-toast';
 import { useAnalyze } from './hooks/useAnalyze'
 import { generateWordDoc } from './lib/docxGenerator'
-import { trackEvent, ANALYTICS_EVENTS } from './lib/analytics'
+import { trackEvent, ANALYTICS_EVENTS, initializeGA } from './lib/analytics'
+import CookieConsent from "react-cookie-consent";
 import Header from './components/Header'
 import Landing from './components/Landing'
 import UploadSection from './components/UploadSection'
@@ -652,6 +654,28 @@ function App() {
       />
       {/* Stripe Portal Redirect Modal */}
       <StripePortalModal isOpen={isPortalModalOpen} />
+
+      {/* GDPR / KVKK Cookie Consent Banner */}
+      <CookieConsent
+        location="bottom"
+        buttonText="Kabul Ediyorum"
+        declineButtonText="Reddet"
+        enableDeclineButton
+        cookieName="goglobalcv_cookie_consent"
+        style={{ background: "#2B373B", alignItems: "center" }}
+        buttonStyle={{ color: "#4e503b", fontSize: "13px", borderRadius: "5px", fontWeight: "bold" }}
+        declineButtonStyle={{ color: "#fff", background: "#f87171", fontSize: "13px", borderRadius: "5px" }}
+        expires={150}
+        onAccept={() => {
+          initializeGA(import.meta.env.VITE_GOOGLE_ANALYTICS_ID);
+        }}
+      >
+        Sitemiz, deneyiminizi iyileştirmek için çerezleri kullanır.{" "}
+        <span style={{ fontSize: "10px" }}>
+          Devam ederek KVKK kapsamındaki aydınlatma metnini kabul etmiş olursunuz.
+        </span>
+      </CookieConsent>
+      <Toaster position="top-right" />
     </div>
   )
 }
