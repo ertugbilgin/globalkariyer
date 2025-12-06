@@ -155,13 +155,21 @@ const handleCheckoutComplete = async (session) => {
                 status: 'completed'
             });
 
-        // Send admin notification
-        await sendAdminNotification('new_sale', {
-            email: email,
-            product_type: productType,
-            amount: amount,
-            stripe_session_id: session.id
-        });
+        console.log(`✅ Transaction logged for ${email}`);
+
+        // Send admin notification (non-blocking - don't fail if email fails)
+        try {
+            await sendAdminNotification('new_sale', {
+                email: email,
+                product_type: productType,
+                amount: amount,
+                stripe_session_id: session.id
+            });
+            console.log('✅ Admin notification sent');
+        } catch (emailError) {
+            console.error('⚠️ Failed to send admin notification (non-critical):', emailError.message);
+            // Don't throw - transaction already logged
+        }
 
         console.log(`✅ Transaction logged for ${email}: ${productType} - $${amount}`);
     } catch (error) {
