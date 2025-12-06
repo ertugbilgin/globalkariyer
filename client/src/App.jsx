@@ -658,21 +658,42 @@ function App() {
       {/* GDPR / KVKK Cookie Consent Banner */}
       <CookieConsent
         location="bottom"
-        buttonText="Kabul Ediyorum"
-        declineButtonText="Reddet"
+        buttonText="Accept"
+        declineButtonText="Decline"
         enableDeclineButton
         cookieName="goglobalcv_cookie_consent"
-        style={{ background: "#2B373B", alignItems: "center" }}
-        buttonStyle={{ color: "#4e503b", fontSize: "13px", borderRadius: "5px", fontWeight: "bold" }}
-        declineButtonStyle={{ color: "#fff", background: "#f87171", fontSize: "13px", borderRadius: "5px" }}
+        style={{
+          background: "#1e293b", // slate-800
+          borderTop: "1px solid #334155", // slate-700
+          alignItems: "center",
+          fontFamily: "inherit",
+          fontSize: "14px"
+        }}
+        buttonStyle={{
+          background: "#4f46e5", // indigo-600
+          color: "#fff",
+          fontSize: "13px",
+          borderRadius: "6px",
+          fontWeight: "600",
+          padding: "8px 16px",
+          margin: "0 10px 0 0"
+        }}
+        declineButtonStyle={{
+          background: "transparent",
+          border: "1px solid #475569", // slate-600
+          color: "#94a3b8", // slate-400
+          fontSize: "13px",
+          borderRadius: "6px",
+          padding: "8px 16px",
+          margin: "0"
+        }}
         expires={150}
         onAccept={() => {
           initializeGA(import.meta.env.VITE_GOOGLE_ANALYTICS_ID);
         }}
       >
-        Sitemiz, deneyiminizi iyileştirmek için çerezleri kullanır.{" "}
-        <span style={{ fontSize: "10px" }}>
-          Devam ederek KVKK kapsamındaki aydınlatma metnini kabul etmiş olursunuz.
+        <span className="text-slate-200">
+          We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.
         </span>
       </CookieConsent>
       <Toaster position="top-right" />
