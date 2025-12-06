@@ -141,7 +141,7 @@ const handleCheckoutComplete = async (session) => {
         }
 
         // Log transaction
-        await supabase
+        const { data: transactionData, error: transactionError } = await supabase
             .from('transactions')
             .insert({
                 user_id: user?.id,
@@ -153,9 +153,15 @@ const handleCheckoutComplete = async (session) => {
                 stripe_customer_id: session.customer,
                 stripe_subscription_id: session.subscription,
                 status: 'completed'
-            });
+            })
+            .select();
 
-        console.log(`✅ Transaction logged for ${email}`);
+        if (transactionError) {
+            console.error('❌ Failed to log transaction:', transactionError);
+            throw new Error(`Transaction logging failed: ${transactionError.message}`);
+        }
+
+        console.log(`✅ Transaction logged for ${email}`, transactionData);
 
         // Send admin notification (non-blocking - don't fail if email fails)
         try {
