@@ -67,90 +67,51 @@ function App() {
   // Verify premium status from backend (or simple check for now)
   // In a real app, you'd fetch /api/user/me or similar
   /* 
-   * Verify premium status by checking the 'users' table in Supabase.
-   * This replaces the MVP logic that blindly granted access.
+   * Verify access rights using server-side endpoint
+   * This bypasses RLS issues and ensures consistent logic
    */
   const verifyPremiumStatus = async (email) => {
     if (!email) return;
 
     try {
-      console.log('🔍 Verifying premium status for:', email);
+      console.log('🔍 Verifying access for:', email);
 
-      const { data: user, error } = await supabase
-        .from('users')
-        .select('is_premium, stripe_customer_id')
-        .eq('email', email)
-        .single();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
-      if (error) {
-        // If user not found (new login), they are NOT premium.
-        // We don't error out, just default to free tier.
-        console.log('ℹ️ User verification: User likely new or not in DB yet (Free Tier)');
-        setHasPremiumAccess(false);
-        setHasCoverLetterAccess(false);
-        setHasInterviewPrepAccess(false);
-        setIsPaid(false);
+      if (!token) {
+        console.log('ℹ️ No token found for verification');
         return;
       }
 
-      if (user && user.is_premium) {
-        console.log('👑 Premium User Verified!');
-        setHasPremiumAccess(true);
-        setIsPaid(true);
-        // Premium users get everything
-        setHasCoverLetterAccess(true);
-        setHasInterviewPrepAccess(true);
+      // Call Server Endpoint
+      const res = await fetch(`${API_URL}/api/auth/check-access`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
+      if (!res.ok) throw new Error('Failed to verify access');
+
+      const accessIds = await res.json();
+      console.log('✅ Access Verified Server-Side:', accessIds);
+
+      setHasPremiumAccess(accessIds.hasPremiumAccess);
+      setHasCoverLetterAccess(accessIds.hasCoverLetterAccess);
+      setHasInterviewPrepAccess(accessIds.hasInterviewPrepAccess);
+      setIsPaid(accessIds.isPaid);
+
+      if (accessIds.hasPremiumAccess) {
         // Show welcome toast only for verified premium users
         setShowUnlockToast(true);
         setTimeout(() => setShowUnlockToast(false), 5000);
-      } else {
-        console.log('👤 Standard User Verified (Checking for one-time purchases...)');
-        setHasPremiumAccess(false);
-
-        // CHECK FOR ONE-TIME PURCHASES (CV Download, etc.)
-        // This ensures users who bought a single feature can still access it after refresh/login
-        // BUT we limit this to recent purchases (e.g. 30 days) so it doesn't last forever.
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-        const { data: transactions, error: txError } = await supabase
-          .from('transactions')
-          .select('product_type, status, created_at')
-          .eq('email', email)
-          .eq('status', 'completed')
-          .eq('product_type', 'cv_download')
-          .gte('created_at', thirtyDaysAgo.toISOString()) // Valid for 30 days
-          .limit(1);
-
-        if (!txError && transactions && transactions.length > 0) {
-          console.log('✅ Found valid recent one-time purchase: cv_download');
-          setIsPaid(true);
-        } else {
-          setIsPaid(false);
-        }
-
-        // Check for other feature unlocks if needed (cover_letter, interview_prep)
-        const { data: otherTx } = await supabase
-          .from('transactions')
-          .select('product_type, created_at')
-          .eq('email', email)
-          .eq('status', 'completed')
-          .gte('created_at', thirtyDaysAgo.toISOString()) // Valid for 30 days
-          .in('product_type', ['cover_letter', 'interview_prep']);
-
-        if (otherTx) {
-          otherTx.forEach(tx => {
-            if (tx.product_type === 'cover_letter') setHasCoverLetterAccess(true);
-            if (tx.product_type === 'interview_prep') setHasInterviewPrepAccess(true);
-          });
-        }
       }
 
     } catch (err) {
-      console.error('❌ Verify premium failed:', err);
-      // Default to safe state
+      console.error('❌ Verify access failed:', err);
+      // Default to safe state (Free Tier)
       setHasPremiumAccess(false);
+      setIsPaid(false);
     }
   };
 
