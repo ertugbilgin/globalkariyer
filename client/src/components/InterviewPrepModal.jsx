@@ -22,7 +22,10 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
     ];
 
     useEffect(() => {
-        setLocalJobDesc(jobDescription || "");
+        // Check sessionStorage for JD saved before payment
+        const savedJD = sessionStorage.getItem('temp_job_desc');
+        const jdToUse = jobDescription || savedJD || "";
+        setLocalJobDesc(jdToUse);
         // Reset prep content if the job description from parent changes
         setPrep(null);
     }, [jobDescription]);
@@ -139,7 +142,7 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="relative w-full max-w-4xl max-h-[85vh] flex flex-col rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl animate-scale-in transform scale-90 md:scale-100 origin-top">
+            <div className="relative w-full max-w-4xl max-h-[80vh] flex flex-col rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl animate-scale-in transform scale-90 md:scale-100 origin-top">
                 {/* Close Button */}
                 <button
                     onClick={onClose}

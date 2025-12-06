@@ -14,7 +14,11 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
     // Reset state when modal opens
     useEffect(() => {
         if (isOpen) {
-            setLocalJobDesc(jobDesc || "");
+            // First priority: jobDesc prop
+            // Second priority: sessionStorage (for post-payment return)
+            const savedJD = sessionStorage.getItem('temp_job_desc');
+            const jdToUse = jobDesc || savedJD || "";
+            setLocalJobDesc(jdToUse);
             setCoverLetter("");
             setError(null);
         }
@@ -87,7 +91,7 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
             />
 
             {/* Modal Content */}
-            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 transform scale-90 md:scale-100 origin-top">
+            <div className="relative w-full max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 transform scale-90 md:scale-100 origin-top">
                 {/* Close Button */}
                 <button
                     onClick={onClose}

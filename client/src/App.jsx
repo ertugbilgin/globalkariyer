@@ -89,9 +89,9 @@ function App() {
       const paymentSuccess = urlParams.get('payment_success');
 
       if (paymentSuccess) {
-        // Restore analysis state
-        const savedResult = sessionStorage.getItem('result');
-        const savedJobDesc = sessionStorage.getItem('jobDesc');
+        // Restore analysis state - check both old and new keys for backwards compatibility
+        const savedResult = sessionStorage.getItem('temp_analysis') || sessionStorage.getItem('result');
+        const savedJobDesc = sessionStorage.getItem('temp_job_desc') || sessionStorage.getItem('jobDesc');
 
         if (savedResult) {
           try {
