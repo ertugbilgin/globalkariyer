@@ -1,6 +1,12 @@
 const { extractTextFromFile } = require('../services/fileService.cjs');
 const { callGeminiRaw } = require('../services/aiService.cjs');
 const { cleanAndParseJSON } = require('../services/parserService.cjs');
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 const analyzeCV = async (req, res) => {
   try {
@@ -174,8 +180,32 @@ Return response ONLY in this EXACT JSON format (no explanation, no markdown outs
 }`;
 
     try {
-      const rawResponse = await callGeminiRaw(prompt);
-      const finalData = cleanAndParseJSON(rawResponse);
+      const gResp = await callGeminiRaw(prompt);
+      const rawText = typeof gResp === 'object' ? gResp.text : gResp;
+      const usage = typeof gResp === 'object' ? gResp.usage : null;
+
+      const finalData = cleanAndParseJSON(rawText);
+
+      // Log AI Usage
+      if (usage) {
+        const inputTokens = usage.promptTokenCount || 0;
+        const outputTokens = usage.candidatesTokenCount || 0;
+        const totalTokens = usage.totalTokenCount || 0;
+        // Cost: Input $0.35/1M, Output $1.05/1M (Gemini 1.5 Flash)
+        const cost = ((inputTokens / 1000000) * 0.35) + ((outputTokens / 1000000) * 1.05);
+
+        supabase.from('analytics_events').insert({
+          event_type: 'gl_ai_usage', // Special prefix for global tracking
+          metadata: {
+            type: 'cv_analysis',
+            tokens: { input: inputTokens, output: outputTokens, total: totalTokens },
+            cost_usd: cost,
+            model: 'gemini-1.5-flash'
+          }
+        }).then(({ error }) => {
+          if (error) console.error('Failed to log AI usage:', error);
+        });
+      }
 
       // Check for CV validation error
       if (finalData.error === "NOT_A_CV") {
