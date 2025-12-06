@@ -14,11 +14,11 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, onO
     // Reset state when modal opens
     useEffect(() => {
         if (isOpen) {
-            setLocalJobDesc(jobDescription || "");
+            setLocalJobDesc(jobDesc || "");
             setCoverLetter("");
             setError(null);
         }
-    }, [isOpen, jobDescription]);
+    }, [isOpen, jobDesc]);
 
     const handleGenerate = async () => {
         if (!localJobDesc?.trim()) {
