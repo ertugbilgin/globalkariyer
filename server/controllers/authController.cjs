@@ -173,6 +173,94 @@ const signOut = async (req, res) => {
 module.exports = {
     sendMagicLink,
     getCurrentUser,
-    verifySession,
-    signOut
+    signOut,
+    checkAccess
+};
+
+/**
+ * Check user access rights
+ * Verifies both Premium status and valid one-time purchases (30 days)
+ * Replaces client-side verification to bypass RLS issues with null user_ids in transactions
+ */
+const checkAccess = async (req, res) => {
+    try {
+        // req.user is attached by middleware
+        if (!req.user || !req.user.email) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const email = req.user.email;
+        console.log(`🔐 Access Check for: ${email}`);
+
+        // 1. Check Premium Status from Users Table
+        const { data: user, error: userError } = await supabase
+            .from('users')
+            .select('is_premium')
+            .eq('email', email)
+            .single();
+
+        if (userError && userError.code !== 'PGRST116') {
+            console.error('User fetch error:', userError);
+        }
+
+        if (user && user.is_premium) {
+            console.log(`✅ Premium access confirmed for ${email}`);
+            return res.json({
+                hasPremiumAccess: true,
+                hasCoverLetterAccess: true,
+                hasInterviewPrepAccess: true,
+                isPaid: true
+            });
+        }
+
+        // 2. Check Valid Transactions (Last 30 Days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const { data: transactions, error: txError } = await supabase
+            .from('transactions')
+            .select('product_type, status, created_at')
+            .eq('email', email)
+            .eq('status', 'completed')
+            .gte('created_at', thirtyDaysAgo.toISOString());
+
+        if (txError) {
+            console.error('Transaction fetch error:', txError);
+            return res.json({
+                hasPremiumAccess: false,
+                hasCoverLetterAccess: false,
+                hasInterviewPrepAccess: false,
+                isPaid: false
+            });
+        }
+
+        const access = {
+            hasPremiumAccess: false,
+            hasCoverLetterAccess: false,
+            hasInterviewPrepAccess: false,
+            isPaid: false
+        };
+
+        if (transactions && transactions.length > 0) {
+            transactions.forEach(tx => {
+                const type = tx.product_type;
+                if (type === 'cv_download') access.isPaid = true;
+                if (type === 'cover_letter') access.hasCoverLetterAccess = true;
+                if (type === 'interview_prep') access.hasInterviewPrepAccess = true;
+                if (type === 'premium') { // Just in case
+                    access.hasPremiumAccess = true;
+                    access.isPaid = true;
+                    access.hasCoverLetterAccess = true;
+                    access.hasInterviewPrepAccess = true;
+                }
+            });
+        }
+
+        console.log(`ℹ️ Access Report for ${email}:`, JSON.stringify(access));
+        res.json(access);
+
+    } catch (error) {
+        console.error('Check access error:', error);
+        res.status(500).json({ error: 'Failed to check access' });
+    }
 };
