@@ -51,7 +51,7 @@ const createStripeSession = async (req, res, { priceData, mode = 'payment', succ
                 quantity: 1,
             }],
             success_url: `${FRONTEND_URL}/?payment_success=true&feature=${productType}`,
-            cancel_url: `${FRONTEND_URL}${cancelPath}`,
+            cancel_url: `${FRONTEND_URL}/?payment_cancelled=true`,
             metadata: { type: productType }
         };
 

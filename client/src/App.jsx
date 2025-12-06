@@ -79,7 +79,36 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentSuccess = params.get('payment_success');
+    const paymentCancelled = params.get('payment_cancelled');
     const successType = params.get('type');
+
+    // Handle payment cancellation - restore state and show message
+    if (paymentCancelled === 'true') {
+      // Restore analysis state from sessionStorage
+      const savedResult = sessionStorage.getItem('temp_analysis') || sessionStorage.getItem('result');
+      const savedJobDesc = sessionStorage.getItem('temp_job_desc') || sessionStorage.getItem('jobDesc');
+
+      if (savedResult) {
+        try {
+          const parsedResult = JSON.parse(savedResult);
+          setResult(parsedResult);
+          console.log('✅ Analysis state restored after payment cancellation');
+        } catch (e) {
+          console.error('Failed to parse saved result:', e);
+        }
+      }
+
+      if (savedJobDesc) {
+        setJobDesc(savedJobDesc);
+      }
+
+      // Show friendly message
+      alert('Payment cancelled. No worries - your analysis is still here!');
+
+      // Clean URL
+      window.history.replaceState({}, document.title, "/");
+      return; // Exit early, don't process payment success
+    }
 
     if (paymentSuccess === 'true' && successType) {
       // Restore saved analysis state
