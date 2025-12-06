@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const multer = require('multer');
 const { analyzeCV } = require('./controllers/analyzeController.cjs');
 const { createCoverLetter } = require('./controllers/coverLetterController.cjs');
 const {
@@ -14,11 +13,12 @@ const { initCronJobs } = require('./services/cronJobs.cjs');
 const { requireAdmin } = require('./middleware/adminAuth.cjs');
 const adminController = require('./controllers/adminController.cjs');
 
+const { upload, handleUploadError } = require('./middleware/uploadMiddleware.cjs');
+const { sanitizeInput } = require('./middleware/sanitize.cjs');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-const upload = multer({ storage: multer.memoryStorage() });
 
 // Trust proxy
 app.set('trust proxy', 1);
@@ -52,7 +52,7 @@ app.use(express.json());
 app.get('/', (req, res) => res.send('✅ Motor v52.0 (Strict Mode) Hazır!'));
 
 // Analysis routes
-app.post('/analyze', upload.any(), analyzeCV);
+app.post('/analyze', upload.any(), handleUploadError, sanitizeInput, analyzeCV);
 app.post('/cover-letter', createCoverLetter);
 app.post('/interview-prep', require('./controllers/interviewPrepController.cjs').createInterviewPrep);
 app.post('/job-match', require('./controllers/jobMatchController.cjs').analyzeJobMatch);
