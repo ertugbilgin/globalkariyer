@@ -55,7 +55,11 @@ async function callGeminiRaw(prompt, systemInstructionText = null) {
             const data = await response.json();
             if (data.candidates && data.candidates[0]) {
                 console.log(`✅ BAŞARILI!(${model} cevap verdi)`);
-                return data.candidates[0].content.parts[0].text;
+                // Return both text and usage metadata
+                return {
+                    text: data.candidates[0].content.parts[0].text,
+                    usage: data.usageMetadata || { promptTokenCount: 0, candidatesTokenCount: 0, totalTokenCount: 0 }
+                };
             }
         } catch (err) {
             console.log(`⚠️ Hata(${model}): ${err.message}`);
@@ -67,16 +71,29 @@ async function callGeminiRaw(prompt, systemInstructionText = null) {
 async function generateCoverLetter({ cvText, jobDescription, roleTitle, companyName, language, tone }) {
     const lang = (language || 'en').toLowerCase().split('-')[0];
 
-    let systemInstruction = "";
-    if (lang === "tr") {
-        systemInstruction = "Sen Türkçe konuşan uzman bir kariyer koçu ve cover letter yazım uzmanısın. Tüm çıktıyı doğal, akıcı ve profesyonel Türkçe yaz.";
-    } else if (lang === "zh" || lang === "cn") {
-        systemInstruction = "你是一名专业的职业顾问和求职信写作专家。请使用自然、准确、专业的中文回答所有内容。";
-    } else {
-        systemInstruction = "You are a senior career coach and expert cover letter writer. You MUST respond in natural, fluent, professional English, regardless of the input language.";
-    }
+    // ... (keep systemInstruction + userPrompt construction same as before) ...
+    // Since I can't put the huge block here easily without restating it, I will assume the prompt logic is unchanged.
+    // I will use `replace_file_content` on the specific blocks.
 
-    const userPrompt = `
+    // WAIT: I can't re-implement the whole internal logic if I don't paste it.
+    // I need to only change the Return lines or wrapping logic.
+
+    // Strategy: I will split this into smaller chunks.
+}
+// SKIP THIS TEXT BLOCK - Use chunks below.
+
+const lang = (language || 'en').toLowerCase().split('-')[0];
+
+let systemInstruction = "";
+if (lang === "tr") {
+    systemInstruction = "Sen Türkçe konuşan uzman bir kariyer koçu ve cover letter yazım uzmanısın. Tüm çıktıyı doğal, akıcı ve profesyonel Türkçe yaz.";
+} else if (lang === "zh" || lang === "cn") {
+    systemInstruction = "你是一名专业的职业顾问和求职信写作专家。请使用自然、准确、专业的中文回答所有内容。";
+} else {
+    systemInstruction = "You are a senior career coach and expert cover letter writer. You MUST respond in natural, fluent, professional English, regardless of the input language.";
+}
+
+const userPrompt = `
 OUTPUT LANGUAGE: ${lang === "tr" ? "TURKISH" : (lang === "zh" || lang === "cn") ? "CHINESE" : "ENGLISH"}
 IMPORTANT: Write the cover letter in the specified OUTPUT LANGUAGE.
 
@@ -101,7 +118,10 @@ ${(lang === "tr") ? "Lütfen aşağıdaki kurallara göre bir cover letter yaz:"
 - Include a strong but humble closing sentence and call to action (e.g., request for interview).
 `;
 
-    return await callGeminiRaw(systemInstruction + "\n\n" + userPrompt);
+const response = await callGeminiRaw(systemInstruction + "\n\n" + userPrompt);
+// Handle both old (string) and new (object) format of callGeminiRaw for safety, though only object is used now.
+if (typeof response === 'string') return { text: response, usage: null };
+return { text: response.text, usage: response.usage };
 }
 
 async function generateInterviewPrep({ cvText, jobDescription, language }) {
@@ -202,10 +222,13 @@ ${(lang === "tr") ? "Örnek JSON şeması:" : (lang === "zh" || lang === "cn") ?
 `;
 
     const rawResponse = await callGeminiRaw(userPrompt, systemPrompt);
+    const textContent = typeof rawResponse === 'object' ? rawResponse.text : rawResponse;
+    const usage = typeof rawResponse === 'object' ? rawResponse.usage : null;
 
     // Clean markdown code blocks if present
-    let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(cleanJson);
+    let cleanJson = textContent.replace(/```json/g, '').replace(/```/g, '').trim();
+    const data = JSON.parse(cleanJson);
+    return { data, usage };
 }
 
 async function analyzeCV({ cvText, jobDescription, language }) {
