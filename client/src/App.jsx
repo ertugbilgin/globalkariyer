@@ -131,8 +131,15 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    // Reset access to default/localStorage state (or clear it)
-    // For now, let's reload to be clean
+    // CRITICAL: Clear all local access state
+    localStorage.removeItem('feature_access');
+    localStorage.removeItem('temp_premium');
+    setHasPremiumAccess(false);
+    setHasCoverLetterAccess(false);
+    setHasInterviewPrepAccess(false);
+    setIsPaid(false);
+
+    // Reload to ensure a clean slate
     window.location.reload();
   };
 
