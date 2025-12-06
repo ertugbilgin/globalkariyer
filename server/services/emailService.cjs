@@ -191,7 +191,20 @@ const sendDailySummary = async (period = 'morning') => {
     .from('transactions')
     .select('*')
     .gte('created_at', `${dateStr}T00:00:00`)
+    .select('*')
+    .gte('created_at', `${dateStr}T00:00:00`)
     .lt('created_at', `${dateStr}T23:59:59`);
+
+  // NEW: Fetch AI Usage Stats
+  const { data: aiEvents } = await supabase
+    .from('analytics_events')
+    .select('*')
+    .eq('event_type', 'gl_ai_usage')
+    .gte('created_at', `${dateStr}T00:00:00`)
+    .lt('created_at', `${dateStr}T23:59:59`);
+
+  const aiCost = aiEvents?.reduce((sum, e) => sum + (e.metadata?.cost_usd || 0), 0) || 0;
+  const totalTokens = aiEvents?.reduce((sum, e) => sum + (e.metadata?.tokens?.total || 0), 0) || 0;
 
   const revenue = ((stats?.total_revenue || 0) / 100).toFixed(2);
   const txCount = stats?.transaction_count || 0;
@@ -199,6 +212,8 @@ const sendDailySummary = async (period = 'morning') => {
   const avgTime = stats?.avg_analysis_time || 0;
   const successRate = stats?.success_rate || 0;
   const errorCount = stats?.error_count || 0;
+
+  const profit = (parseFloat(revenue) - aiCost).toFixed(2);
 
   const subject = `${isMorning ? '🌅' : '🌙'} ${isMorning ? 'Morning' : 'Evening'} Report - ${dateStr}`;
 
@@ -215,6 +230,7 @@ const sendDailySummary = async (period = 'morning') => {
         .metric-value { font-size: 28px; font-weight: bold; color: #111827; }
         .metric-label { font-size: 12px; color: #6b7280; text-transform: uppercase; margin-top: 5px; }
         .performance { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .ai-stats { background: #fee2e2; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #fecaca; }
       </style>
     </head>
     <body>
@@ -231,6 +247,10 @@ const sendDailySummary = async (period = 'morning') => {
             <div class="metric-label">Revenue</div>
           </div>
           <div class="metric">
+            <div class="metric-value">$${profit}</div>
+            <div class="metric-label" style="color: ${profit >= 0 ? 'green' : 'red'}">Net Profit (est.)</div>
+          </div>
+          <div class="metric">
             <div class="metric-value">${txCount}</div>
             <div class="metric-label">Transactions</div>
           </div>
@@ -238,10 +258,13 @@ const sendDailySummary = async (period = 'morning') => {
             <div class="metric-value">${analyses}</div>
             <div class="metric-label">CV Analyses</div>
           </div>
-          <div class="metric">
-            <div class="metric-value">${transactions?.length || 0}</div>
-            <div class="metric-label">Unique Customers</div>
-          </div>
+        </div>
+
+        <div class="ai-stats">
+          <h3 style="margin-top: 0; color: #991b1b;">🤖 AI Cost & Usage</h3>
+          <p><strong>Total Cost:</strong> $${aiCost.toFixed(4)}</p>
+          <p><strong>Total Tokens:</strong> ${totalTokens.toLocaleString()}</p>
+          <p><strong>Avg Cost/Analysis:</strong> $${analyses > 0 ? (aiCost / analyses).toFixed(4) : '0.00'}</p>
         </div>
 
         <div class="performance">
@@ -249,7 +272,6 @@ const sendDailySummary = async (period = 'morning') => {
           <p><strong>Total Analyses:</strong> ${analyses}</p>
           <p><strong>Success Rate:</strong> ${successRate.toFixed(1)}% ${successRate >= 85 ? '✅' : '⚠️'}</p>
           <p><strong>Avg Response Time:</strong> ${(avgTime / 1000).toFixed(1)}s</p>
-          <p><strong>Failed Analyses:</strong> ${errorCount} (${analyses > 0 ? ((errorCount / analyses) * 100).toFixed(1) : 0}%)</p>
         </div>
 
         ${transactions && transactions.length > 0 ? `
