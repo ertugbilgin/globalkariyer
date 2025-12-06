@@ -71,29 +71,16 @@ async function callGeminiRaw(prompt, systemInstructionText = null) {
 async function generateCoverLetter({ cvText, jobDescription, roleTitle, companyName, language, tone }) {
     const lang = (language || 'en').toLowerCase().split('-')[0];
 
-    // ... (keep systemInstruction + userPrompt construction same as before) ...
-    // Since I can't put the huge block here easily without restating it, I will assume the prompt logic is unchanged.
-    // I will use `replace_file_content` on the specific blocks.
+    let systemInstruction = "";
+    if (lang === "tr") {
+        systemInstruction = "Sen Türkçe konuşan uzman bir kariyer koçu ve cover letter yazım uzmanısın. Tüm çıktıyı doğal, akıcı ve profesyonel Türkçe yaz.";
+    } else if (lang === "zh" || lang === "cn") {
+        systemInstruction = "你是一名专业的职业顾问和求职信写作专家。请使用自然、准确、专业的中文回答所有内容。";
+    } else {
+        systemInstruction = "You are a senior career coach and expert cover letter writer. You MUST respond in natural, fluent, professional English, regardless of the input language.";
+    }
 
-    // WAIT: I can't re-implement the whole internal logic if I don't paste it.
-    // I need to only change the Return lines or wrapping logic.
-
-    // Strategy: I will split this into smaller chunks.
-}
-// SKIP THIS TEXT BLOCK - Use chunks below.
-
-const lang = (language || 'en').toLowerCase().split('-')[0];
-
-let systemInstruction = "";
-if (lang === "tr") {
-    systemInstruction = "Sen Türkçe konuşan uzman bir kariyer koçu ve cover letter yazım uzmanısın. Tüm çıktıyı doğal, akıcı ve profesyonel Türkçe yaz.";
-} else if (lang === "zh" || lang === "cn") {
-    systemInstruction = "你是一名专业的职业顾问和求职信写作专家。请使用自然、准确、专业的中文回答所有内容。";
-} else {
-    systemInstruction = "You are a senior career coach and expert cover letter writer. You MUST respond in natural, fluent, professional English, regardless of the input language.";
-}
-
-const userPrompt = `
+    const userPrompt = `
 OUTPUT LANGUAGE: ${lang === "tr" ? "TURKISH" : (lang === "zh" || lang === "cn") ? "CHINESE" : "ENGLISH"}
 IMPORTANT: Write the cover letter in the specified OUTPUT LANGUAGE.
 
@@ -118,10 +105,10 @@ ${(lang === "tr") ? "Lütfen aşağıdaki kurallara göre bir cover letter yaz:"
 - Include a strong but humble closing sentence and call to action (e.g., request for interview).
 `;
 
-const response = await callGeminiRaw(systemInstruction + "\n\n" + userPrompt);
-// Handle both old (string) and new (object) format of callGeminiRaw for safety, though only object is used now.
-if (typeof response === 'string') return { text: response, usage: null };
-return { text: response.text, usage: response.usage };
+    const response = await callGeminiRaw(systemInstruction + "\n\n" + userPrompt);
+    // Handle both old (string) and new (object) format of callGeminiRaw for safety, though only object is used now.
+    if (typeof response === 'string') return { text: response, usage: null };
+    return { text: response.text, usage: response.usage };
 }
 
 async function generateInterviewPrep({ cvText, jobDescription, language }) {
