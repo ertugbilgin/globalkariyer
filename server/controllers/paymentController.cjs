@@ -75,17 +75,20 @@ const handleCheckoutComplete = async (session) => {
     try {
         let email, userId;
 
-        // Get email and user ID
+        // Get email and user ID - try multiple sources
         if (session.customer) {
             const customer = await stripe.customers.retrieve(session.customer);
             email = customer.email;
             userId = customer.metadata?.user_id;
+        } else if (session.customer_details?.email) {
+            // Stripe Checkout provides email in customer_details
+            email = session.customer_details.email;
         } else if (session.customer_email) {
             email = session.customer_email;
         }
 
         if (!email) {
-            console.error('No email found in session');
+            console.error('No email found in session', JSON.stringify(session, null, 2));
             return;
         }
 
