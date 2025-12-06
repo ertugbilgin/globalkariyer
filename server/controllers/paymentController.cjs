@@ -50,7 +50,7 @@ const createStripeSession = async (req, res, { priceData, mode = 'payment', succ
                 price_data: priceData,
                 quantity: 1,
             }],
-            success_url: `${FRONTEND_URL}/?payment_success=true&feature=${productType}`,
+            success_url: `${FRONTEND_URL}/?payment_success=true&feature=${productType}&session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${FRONTEND_URL}/?payment_cancelled=true`,
             metadata: { type: productType }
         };
@@ -199,6 +199,7 @@ const verifyPayment = async (req, res) => {
                 success: true,
                 email: session.customer_email || (await stripe.customers.retrieve(session.customer)).email,
                 type: session.metadata?.type || 'unknown',
+                subscription_id: session.subscription,
                 amount: (session.amount_total / 100).toFixed(2)
             });
         } else {

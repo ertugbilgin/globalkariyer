@@ -89,6 +89,7 @@ app.post('/pay/cv-download', createCvDownloadSession);
 app.post('/pay/cover-letter', createCoverLetterSession);
 app.post('/pay/interview-prep', createInterviewPrepSession);
 app.post('/pay/premium', createPremiumSession);
+app.get('/api/verify-payment', require('./controllers/paymentController.cjs').verifyPayment);
 
 // Admin routes
 app.get('/api/admin/analytics/overview', requireAdmin, adminController.getAnalyticsOverview);

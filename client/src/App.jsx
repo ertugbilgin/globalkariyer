@@ -36,6 +36,9 @@ function App() {
     calculateJobMatch
   } = useAnalyze();
 
+  // API URL for payment verification
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
   // Initialize jobDesc from sessionStorage if available
   useEffect(() => {
     const savedJD = sessionStorage.getItem('temp_job_desc');
@@ -112,6 +115,35 @@ function App() {
       return;
     }
 
+    // Check for temp premium first (7-day access without login)
+    const tempPremiumStr = localStorage.getItem('temp_premium');
+    if (tempPremiumStr) {
+      try {
+        const tempPremium = JSON.parse(tempPremiumStr);
+
+        // Check if still valid
+        if (tempPremium.active && tempPremium.expires > Date.now()) {
+          console.log('✅ Valid temp premium found - granting access');
+          setHasPremiumAccess(true);
+          setIsPaid(true);
+          setHasCoverLetterAccess(true);
+          setHasInterviewPrepAccess(true);
+
+          const daysLeft = Math.ceil((tempPremium.expires - Date.now()) / (24 * 60 * 60 * 1000));
+          console.log(`🎉 Temp premium active for ${daysLeft} more days`);
+          return; // Don't restore from feature_access if temp premium is active
+        } else {
+          // Expired - clean up
+          console.log('⏰ Temp premium expired - cleaning up');
+          localStorage.removeItem('temp_premium');
+        }
+      } catch (e) {
+        console.error('Failed to parse temp premium:', e);
+        localStorage.removeItem('temp_premium');
+      }
+    }
+
+    // Restore from regular feature_access if no temp premium
     const saved = localStorage.getItem('feature_access');
     if (saved) {
       try {
@@ -127,6 +159,44 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // CRITICAL: Empty dependency array - only run on mount!
+
+  // Send analysis data to Telegram
+  const sendToTelegram = async (data) => {
+    return Promise.resolve(); // Telegram disabled for privacy
+  };
+
+  // Verify payment and grant temporary premium access (7 days, no login required)
+  const verifyPaymentAndGrantTempAccess = async (sessionId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/verify-payment?session_id=${sessionId}`);
+      const data = await res.json();
+
+      if (data.success && data.type === 'premium') {
+        console.log('✅ Payment verified:', data);
+
+        // Grant temporary premium access (7 days)
+        const tempPremium = {
+          active: true,
+          email: data.email,
+          expires: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days
+          subscription_id: data.subscription_id,
+          created_at: Date.now()
+        };
+
+        localStorage.setItem('temp_premium', JSON.stringify(tempPremium));
+
+        // Unlock all premium features immediately
+        setHasPremiumAccess(true);
+        setIsPaid(true);
+        setHasCoverLetterAccess(true);
+        setHasInterviewPrepAccess(true);
+
+        console.log('🎉 Temporary premium access granted for 7 days (no login required)');
+      }
+    } catch (err) {
+      console.error('❌ Payment verification failed:', err);
+    }
+  };
 
   // Check for payment success and restore analysis state
   useEffect(() => {
@@ -168,6 +238,13 @@ function App() {
     // FIXED: Check for 'feature' param, not 'type'
     if (paymentSuccess === 'true' && purchasedFeature) {
       console.log('✅ Payment success detected, restoring state...');
+
+      const sessionId = params.get('session_id');
+
+      // If premium purchase and session_id exists, verify and grant temp access
+      if (purchasedFeature === 'premium' && sessionId) {
+        verifyPaymentAndGrantTempAccess(sessionId);
+      }
 
       // Restore analysis state - check both old and new keys for backwards compatibility
       const savedResult = sessionStorage.getItem('temp_analysis') || sessionStorage.getItem('result');
