@@ -12,6 +12,7 @@ const {
 const { initCronJobs } = require('./services/cronJobs.cjs');
 const { requireAdmin } = require('./middleware/adminAuth.cjs');
 const adminController = require('./controllers/adminController.cjs');
+const testEmailRouter = require('./routes/testEmail.cjs');
 
 const { upload, handleUploadError } = require('./middleware/uploadMiddleware.cjs');
 const { sanitizeInput } = require('./middleware/sanitize.cjs');
@@ -97,6 +98,9 @@ app.get('/api/admin/analytics/revenue', requireAdmin, adminController.getRevenue
 app.get('/api/admin/transactions', requireAdmin, adminController.getTransactions);
 app.get('/api/admin/users/stats', requireAdmin, adminController.getUserStats);
 app.get('/api/admin/performance', requireAdmin, adminController.getPerformanceMetrics);
+
+// Test email routes (for debugging SMTP)
+app.use('/api', testEmailRouter);
 
 // Webhook already defined above (before express.json())
 
