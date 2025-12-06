@@ -5,7 +5,20 @@ import { useTranslation } from 'react-i18next';
 export const useAnalyze = () => {
     const [file, setFile] = useState(null);
     const [jobDesc, setJobDesc] = useState('');
-    const [result, setResult] = useState(null);
+    const [result, setResult] = useState(() => {
+        // Restore result from sessionStorage on initial load
+        const savedResult = sessionStorage.getItem('analysis_result');
+        if (savedResult) {
+            try {
+                console.log('✅ Restored analysis result from sessionStorage');
+                return JSON.parse(savedResult);
+            } catch (e) {
+                console.error('Failed to parse saved result:', e);
+                return null;
+            }
+        }
+        return null;
+    });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isAiBusy, setIsAiBusy] = useState(false);
@@ -105,7 +118,12 @@ export const useAnalyze = () => {
             });
 
             setProgress(100);
-            setTimeout(() => setResult(data), 500);
+            setTimeout(() => {
+                setResult(data);
+                // Persist result to sessionStorage
+                sessionStorage.setItem('analysis_result', JSON.stringify(data));
+                console.log('💾 Cached analysis result to sessionStorage');
+            }, 500);
         } catch (err) {
             trackEvent(ANALYTICS_EVENTS.ANALYSIS_FAIL, { error: err.message });
             setError(err.message || "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.");

@@ -118,9 +118,18 @@ const CVPreview = ({ result, printRef, onDownload, isPaid }) => {
     return (
         <div className="lg:col-span-7 sticky top-24 w-full overflow-hidden">
             <div className="panel-glass bg-slate-950/70 p-1 md:p-4 border border-slate-700/70 w-full overflow-hidden">
-                <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-slate-500 px-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    {t('preview')}
+                <div className="mb-3 flex items-center justify-between px-2">
+                    <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-slate-500">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                        {t('preview')}
+                    </div>
+                    <button
+                        onClick={onDownload}
+                        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all"
+                    >
+                        <Wand2 className="w-3.5 h-3.5" />
+                        {t('header.download_cv', 'Download CV')}
+                    </button>
                 </div>
 
                 {result.uiSuggestions?.fontReason?.tr && (
@@ -189,22 +198,6 @@ const CVPreview = ({ result, printRef, onDownload, isPaid }) => {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Mobile Download Button */}
-            <div className="mt-4 flex justify-center lg:hidden">
-                <button
-                    onClick={onDownload}
-                    className="
-                            inline-flex items-center gap-2 rounded-xl 
-                            bg-indigo-600 px-6 py-3 text-sm font-bold text-white 
-                            shadow-lg shadow-indigo-500/20 
-                            hover:bg-indigo-500 transition-all
-                        "
-                >
-                    <Wand2 className="w-4 h-4" />
-                    {t('header.download_cv', 'Download CV')}
-                </button>
             </div>
         </div>
     );

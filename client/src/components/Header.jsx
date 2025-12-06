@@ -102,34 +102,8 @@ const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, on
                         </button>
                     )}
 
-                    {result && (
-                        <button
-                            onClick={handleDownloadClick}
-                            className="
-                                hidden md:inline-flex items-center gap-2 rounded-xl 
-                                bg-indigo-500 px-4 py-2 text-xs font-semibold 
-                                text-white shadow-[0_10px_30px_rgba(79,70,229,0.7)]
-                                hover:bg-indigo-400 hover:-translate-y-0.5
-                                transition-all
-                            "
-                        >
-                            <FileText className="w-4 h-4" />
-                            {t('header.download_cv')}
-                        </button>
-                    )}
-                    {/* Mobile Download Button (Icon only) */}
-                    {result && (
-                        <button
-                            onClick={handleDownloadClick}
-                            className="
-                                md:hidden inline-flex items-center justify-center rounded-xl 
-                                bg-indigo-500 w-9 h-9 text-white shadow-[0_10px_30px_rgba(79,70,229,0.7)]
-                                hover:bg-indigo-400 transition-all
-                            "
-                        >
-                            <FileText className="w-4 h-4" />
-                        </button>
-                    )}
+
+
 
                     {/* Mobile Menu Toggle */}
                     {result && (
@@ -151,6 +125,14 @@ const Header = ({ onDownload, result, onOpenCoverLetter, onOpenInterviewPrep, on
                         <LangChip label="CN" active={i18n.language === 'zh'} onClick={() => changeLanguage('zh')} />
                         <LangChip label="TR" active={i18n.language === 'tr'} onClick={() => changeLanguage('tr')} />
                     </div>
+
+                    <button
+                        onClick={() => { handleDownloadClick(); setIsMobileMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/20"
+                    >
+                        <FileText className="w-5 h-5" />
+                        <span className="font-medium">{t('header.download_cv', 'Download CV')}</span>
+                    </button>
 
                     <button
                         onClick={() => { onOpenCoverLetter(); setIsMobileMenuOpen(false); }}

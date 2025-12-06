@@ -19,7 +19,14 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
             const savedJD = sessionStorage.getItem('temp_job_desc');
             const jdToUse = jobDesc || savedJD || "";
             setLocalJobDesc(jdToUse);
-            setCoverLetter("");
+
+            // Restore cover letter from cache if available
+            const savedCoverLetter = sessionStorage.getItem('temp_cover_letter');
+            if (savedCoverLetter) {
+                console.log('✅ Restored cover letter from cache');
+                setCoverLetter(savedCoverLetter);
+            }
+
             setError(null);
         }
     }, [isOpen, jobDesc]);
@@ -60,6 +67,10 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
             }
 
             setCoverLetter(data.coverLetter || "");
+
+            // Cache cover letter to sessionStorage
+            sessionStorage.setItem('temp_cover_letter', data.coverLetter || "");
+            console.log('💾 Cached cover letter to sessionStorage');
 
             // Notify parent about the new JD if it changed or wasn't there
             if (onJobDescUpdate && localJobDesc) {

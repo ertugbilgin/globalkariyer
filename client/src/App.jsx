@@ -35,18 +35,57 @@ function App() {
     calculateJobMatch
   } = useAnalyze();
 
-  const [isPaid, setIsPaid] = useState(false);
+  // Initialize jobDesc from sessionStorage if available
+  useEffect(() => {
+    const savedJD = sessionStorage.getItem('temp_job_desc');
+    if (savedJD && !jobDesc) {
+      setJobDesc(savedJD);
+      console.log('✅ Restored jobDesc from sessionStorage');
+    }
+  }, []);
+
+  // Persist jobDesc to sessionStorage whenever it changes
+  useEffect(() => {
+    if (jobDesc) {
+      sessionStorage.setItem('temp_job_desc', jobDesc);
+    }
+  }, [jobDesc]);
+
+  // Initialize feature access states from localStorage
+  const getInitialFeatureAccess = () => {
+    try {
+      const saved = localStorage.getItem('feature_access');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        console.log('🔄 Initializing states from localStorage:', parsed);
+        return parsed;
+      }
+    } catch (e) {
+      console.error('Failed to parse localStorage on init:', e);
+    }
+    return {
+      isPaid: false,
+      hasCoverLetterAccess: false,
+      hasInterviewPrepAccess: false,
+      hasPremiumAccess: false
+    };
+  };
+
+  const initialAccess = getInitialFeatureAccess();
+
+  const [isPaid, setIsPaid] = useState(initialAccess.isPaid);
   const [paywallFeature, setPaywallFeature] = useState(null);
   const [successModalFeature, setSuccessModalFeature] = useState(null);
 
   // Feature unlock states
-  const [hasCoverLetterAccess, setHasCoverLetterAccess] = useState(false);
-  const [hasInterviewPrepAccess, setHasInterviewPrepAccess] = useState(false);
-  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const [hasCoverLetterAccess, setHasCoverLetterAccess] = useState(initialAccess.hasCoverLetterAccess);
+  const [hasInterviewPrepAccess, setHasInterviewPrepAccess] = useState(initialAccess.hasInterviewPrepAccess);
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(initialAccess.hasPremiumAccess);
 
   const [isCoverLetterOpen, setIsCoverLetterOpen] = useState(false);
   const [isInterviewPrepOpen, setIsInterviewPrepOpen] = useState(false);
   const [isJobMatchModalOpen, setIsJobMatchModalOpen] = useState(false);
+  const [showUnlockToast, setShowUnlockToast] = useState(false);
 
   const printRef = useRef(null);
   const justCompletedPayment = useRef(false); // Flag to prevent restoration after payment
@@ -64,7 +103,7 @@ function App() {
 
   // Restore feature access ONLY on initial mount
   useEffect(() => {
-    // Skip restoration if we just completed a payment
+    // Skip restoration ONLY if we just completed a payment (ref is reset on page refresh)
     if (justCompletedPayment.current) {
       console.log('⏭️ Skipping localStorage restoration - just completed payment');
       justCompletedPayment.current = false; // Reset flag
@@ -166,6 +205,9 @@ function App() {
         case 'cv_download':
           setIsPaid(true);
           console.log('Setting isPaid = true for cv_download');
+          // Show unlock toast
+          setShowUnlockToast(true);
+          setTimeout(() => setShowUnlockToast(false), 4000);
           break;
         case 'cover_letter':
           setHasCoverLetterAccess(true);
@@ -349,6 +391,23 @@ function App() {
           )}
         </div>
       </main>
+
+      {/* CV Unlock Success Toast */}
+      {showUnlockToast && (
+        <div className="fixed bottom-6 right-6 z-[70] animate-fade-in">
+          <div className="bg-emerald-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px]">
+            <div className="p-2 bg-white/20 rounded-full">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold">CV Unlocked!</p>
+              <p className="text-sm text-emerald-100">You can now download your optimized CV</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
