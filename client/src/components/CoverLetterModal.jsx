@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Loader2, FileText, Copy, Check, X, Wand2, FileDown, Lock } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { generateCoverLetterDoc } from '../lib/docxGenerator';
+import { supabase } from '../lib/supabase';
 
-export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvText, onOpenPaywall, hasAccess }) {
+export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvText, onOpenPaywall, hasAccess, onJobDescUpdate }) {
     const { t, i18n } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [coverLetter, setCoverLetter] = useState("");
@@ -48,10 +49,16 @@ export default function CoverLetterModal({ isOpen, onClose, result, jobDesc, cvT
         setLoading(true);
         setError(null);
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
+
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
             const res = await fetch(`${apiUrl}/cover-letter`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : ''
+                },
                 body: JSON.stringify({
                     cvText,
                     jobDescription: localJobDesc,

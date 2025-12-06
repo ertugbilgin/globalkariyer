@@ -153,7 +153,7 @@ const sendWelcomeEmail = async (email) => {
 
   try {
     const data = await resend.emails.send({
-      from: 'GoGlobalCV <welcome@goglobalcv.com>',
+      from: 'GoGlobalCV <support@goglobalcv.com>',
       to: email,
       subject: 'Welcome to GoGlobalCV Premium! 🎉',
       html: html

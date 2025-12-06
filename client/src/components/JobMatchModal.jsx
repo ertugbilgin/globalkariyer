@@ -7,7 +7,9 @@ export default function JobMatchModal({ isOpen, onClose, onSubmit, initialJobDes
     const [localJobDesc, setLocalJobDesc] = useState(initialJobDesc || "");
 
     useEffect(() => {
-        setLocalJobDesc(initialJobDesc || "");
+        if (isOpen && initialJobDesc) {
+            setLocalJobDesc(initialJobDesc);
+        }
     }, [initialJobDesc, isOpen]);
 
     if (!isOpen) return null;

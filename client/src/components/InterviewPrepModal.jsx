@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { MessageCircleQuestion, Loader2, Sparkles, X, FileDown, Copy, Check, Lock } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { generateInterviewPrepDoc } from '../lib/docxGenerator';
+import { supabase } from '../lib/supabase';
 
 export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescription, onJobDescUpdate, onOpenPaywall, isPaid }) {
     const { t, i18n } = useTranslation();
@@ -90,10 +91,16 @@ export default function InterviewPrepModal({ isOpen, onClose, cvText, jobDescrip
 
         setLoading(true);
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
+
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
             const res = await fetch(`${apiUrl}/interview-prep`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : ''
+                },
                 body: JSON.stringify({
                     cvText,
                     jobDescription: localJobDesc,

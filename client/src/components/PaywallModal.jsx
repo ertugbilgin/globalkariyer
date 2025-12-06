@@ -1,7 +1,7 @@
 import { X, Check } from "lucide-react";
 import { useState } from "react";
 
-export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc }) {
+export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc, onLogin }) {
     const [loading, setLoading] = useState(false);
     const [loadingTarget, setLoadingTarget] = useState(null); // hangi buton için loading
 
@@ -138,7 +138,7 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                         <X className="w-5 h-5" />
                     </button>
 
-                    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+                    <div className="p-3 sm:p-6 md:p-8 space-y-3 sm:space-y-6">
                         {/* Header */}
                         <div className="space-y-2 text-center">
                             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
@@ -147,10 +147,17 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                             <p className="text-gray-600 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
                                 {content.subtitle}
                             </p>
+                            {/* Mobile Top Login Link */}
+                            <button
+                                onClick={onLogin}
+                                className="md:hidden text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-1"
+                            >
+                                Already a member? Log In
+                            </button>
                         </div>
 
                         {/* Two options */}
-                        <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+                        <div className="grid gap-2 sm:gap-4 md:grid-cols-2">
                             {/* Single Option */}
                             <div className="border border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col justify-between bg-gray-50/60">
                                 <div className="space-y-2 sm:space-y-3">
@@ -268,6 +275,16 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                             Maybe later
                         </button>
                     </div>
+
+                    {/* Login Link */}
+                    <div className="px-8 pb-6 text-center">
+                        <button
+                            onClick={onLogin}
+                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
+                        >
+                            Already a member? Log In
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -294,6 +311,12 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                         <p className="text-gray-600 text-sm leading-relaxed">
                             {content.subtitle}
                         </p>
+                        <button
+                            onClick={onLogin}
+                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-1"
+                        >
+                            Already a member? Log In
+                        </button>
                     </div>
 
                     {/* Benefits */}
@@ -361,6 +384,16 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                     >
                         Maybe later
                     </button>
+
+                    {/* Login Link */}
+                    <div className="mt-4 pt-3 border-t border-gray-100 text-center">
+                        <button
+                            onClick={onLogin}
+                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
+                        >
+                            Already a member? Log In
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

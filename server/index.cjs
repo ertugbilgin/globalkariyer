@@ -7,7 +7,8 @@ const {
   createCvDownloadSession,
   createCoverLetterSession,
   createInterviewPrepSession,
-  createPremiumSession
+  createPremiumSession,
+  createPortalSession
 } = require('./controllers/paymentController.cjs');
 const { initCronJobs } = require('./services/cronJobs.cjs');
 const { requireAdmin } = require('./middleware/adminAuth.cjs');
@@ -81,15 +82,21 @@ app.get('/', (req, res) => res.send('✅ Motor v52.0 (Strict Mode) Hazır!'));
 
 // Analysis routes
 app.post('/analyze', upload.any(), handleUploadError, sanitizeInput, analyzeCV);
-app.post('/cover-letter', createCoverLetter);
-app.post('/interview-prep', require('./controllers/interviewPrepController.cjs').createInterviewPrep);
-app.post('/job-match', require('./controllers/jobMatchController.cjs').analyzeJobMatch);
+
+// 🔒 Protected Routes (Require Authentication)
+const { requireAuth } = require('./middleware/authMiddleware.cjs');
+
+app.post('/cover-letter', requireAuth, createCoverLetter);
+app.post('/interview-prep', requireAuth, require('./controllers/interviewPrepController.cjs').createInterviewPrep);
+app.post('/job-match', requireAuth, require('./controllers/jobMatchController.cjs').analyzeJobMatch);
 
 // Payment routes
 app.post('/pay/cv-download', createCvDownloadSession);
 app.post('/pay/cover-letter', createCoverLetterSession);
 app.post('/pay/interview-prep', createInterviewPrepSession);
 app.post('/pay/premium', createPremiumSession);
+app.post('/api/create-portal-session', createPortalSession);
+
 app.get('/api/verify-payment', require('./controllers/paymentController.cjs').verifyPayment);
 
 // Admin routes

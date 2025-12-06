@@ -309,11 +309,57 @@ const createPremiumSession = async (req, res) => {
     });
 };
 
+// Create Stripe Customer Portal session
+const createPortalSession = async (req, res) => {
+    try {
+        const { session_id, email } = req.body;
+
+        if (!session_id && !email) {
+            return res.status(400).json({ error: "Session ID or Email required" });
+        }
+
+        let customerId;
+
+        if (session_id) {
+            // Retrieve the session to get the customer ID
+            const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);
+            customerId = checkoutSession.customer;
+        } else if (email) {
+            // Look up user in Supabase to get stripe_customer_id
+            const { data: user } = await supabase
+                .from('users')
+                .select('stripe_customer_id')
+                .eq('email', email)
+                .single();
+
+            if (user && user.stripe_customer_id) {
+                customerId = user.stripe_customer_id;
+            }
+        }
+
+        if (!customerId) {
+            return res.status(404).json({ error: "Customer not found. You may not have an active subscription." });
+        }
+
+        // Create portal session
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: customerId,
+            return_url: `${FRONTEND_URL}/`,
+        });
+
+        res.json({ url: portalSession.url });
+    } catch (error) {
+        console.error('Portal session error:', error);
+        res.status(500).json({ error: "Failed to create portal session" });
+    }
+};
+
 module.exports = {
     createCvDownloadSession,
     createCoverLetterSession,
     createInterviewPrepSession,
     createPremiumSession,
     handleCheckoutComplete,
-    verifyPayment
+    verifyPayment,
+    createPortalSession
 };

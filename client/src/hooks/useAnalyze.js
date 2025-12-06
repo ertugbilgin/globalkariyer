@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { trackEvent, ANALYTICS_EVENTS } from '../lib/analytics';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '../lib/supabase';
 
 export const useAnalyze = () => {
     const [file, setFile] = useState(null);
@@ -136,10 +137,16 @@ export const useAnalyze = () => {
         if (!currentCvText || !newJobDesc) return;
 
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
+
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
             const res = await fetch(`${apiUrl}/job-match`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : ''
+                },
                 body: JSON.stringify({
                     cvText: currentCvText,
                     jobDescription: newJobDesc,
