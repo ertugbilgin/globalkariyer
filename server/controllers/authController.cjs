@@ -264,5 +264,6 @@ module.exports = {
     sendMagicLink,
     getCurrentUser,
     signOut,
-    checkAccess
+    checkAccess,
+    verifySession
 };
