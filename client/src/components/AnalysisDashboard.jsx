@@ -15,6 +15,49 @@ import {
 import { useTranslation } from 'react-i18next';
 import CoverLetterPanel from './CoverLetterPanel';
 
+// Highlight important keywords in text
+const highlightText = (text) => {
+    if (!text || typeof text !== 'string') return text;
+
+    const patterns = [
+        { regex: /\b(\d+(\.\d+)?)\+?\s*(years?|months?|%|X)\b/gi, color: 'text-amber-400 font-bold' },
+        { regex: /\b(ING|Hepsipay|PayU|Klarna|Stripe|API|KYC|SCA|AML|PSD2|PSR|ATS)\b/g, color: 'text-sky-400 font-semibold' },
+        { regex: /\b(Led|Managed|Improved|Architected|Developed|Built|Scaled|Optimized)\b/g, color: 'text-emerald-400 font-semibold' },
+    ];
+
+    const parts = [];
+    let lastIndex = 0;
+    const allMatches = [];
+
+    patterns.forEach(({ regex, color }) => {
+        const re = new RegExp(regex.source, regex.flags);
+        let match;
+        while ((match = re.exec(text)) !== null) {
+            allMatches.push({ index: match.index, length: match[0].length, text: match[0], color });
+        }
+    });
+
+    allMatches.sort((a, b) => a.index - b.index);
+    const filtered = [];
+    let lastEnd = -1;
+    allMatches.forEach(m => {
+        if (m.index >= lastEnd) {
+            filtered.push(m);
+            lastEnd = m.index + m.length;
+        }
+    });
+
+    filtered.forEach((m, i) => {
+        if (m.index > lastIndex) parts.push(text.substring(lastIndex, m.index));
+        parts.push(<span key={`hl-${i}`} className={m.color}>{m.text}</span>);
+        lastIndex = m.index + m.length;
+    });
+
+    if (lastIndex < text.length) parts.push(text.substring(lastIndex));
+    return parts.length > 0 ? parts : text;
+};
+
+
 /* ================================
    ANIMATED NUMBER COMPONENT
    ================================ */
@@ -155,7 +198,7 @@ const HighLevelAssessment = ({ summary, t }) => (
             {t('dashboard.overview_summary', 'High-Level Assessment')}
         </div>
         <p className="text-xs text-slate-200/90 leading-relaxed whitespace-pre-wrap break-words">
-            {summary || ''}
+            {highlightText(summary || '')}
         </p>
         <p className="mt-2 text-[11px] text-slate-500">
             {t('dashboard.overview_hint', 'Full details are available in the analysis report below.')}
@@ -275,7 +318,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                             </div>
                             <ul className="space-y-1 list-disc list-inside marker:text-emerald-300">
                                 {jobFit.strongPoints.slice(0, 3).map((p, i) => (
-                                    <li key={i} className="text-slate-100">{p}</li>
+                                    <li key={i} className="text-slate-100">{highlightText(p)}</li>
                                 ))}
                             </ul>
                         </div>
@@ -289,7 +332,7 @@ const JobMatchCard = ({ score, matchLevel, keywordRate, jobFit, t, onReset, onOp
                             </div>
                             <ul className="space-y-1 list-disc list-inside marker:text-amber-300">
                                 {jobFit.missingFromCv.slice(0, 3).map((p, i) => (
-                                    <li key={i} className="text-slate-100">{p}</li>
+                                    <li key={i} className="text-slate-100">{highlightText(p)}</li>
                                 ))}
                             </ul>
                         </div>

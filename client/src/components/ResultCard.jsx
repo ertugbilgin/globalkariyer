@@ -45,6 +45,76 @@ const CircularProgress = ({ score }) => {
     );
 };
 
+// Highlight important keywords in text
+const highlightText = (text) => {
+    if (!text || typeof text !== 'string') return text;
+
+    const patterns = [
+        // Numbers with units (10 years, 3X, 80%)
+        { regex: /\b(\d+(\.\d+)?)\+?\s*(years?|months?|%|X)\b/gi, className: 'font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent' },
+        // Company names (common Turkish ones)
+        { regex: /\b(ING|Hepsipay|PayU|Klarna|Stripe|Garanti|İş Bankası|Akbank|YKB|TEB|ING Turkey)\b/g, className: 'font-semibold text-sky-600' },
+        // Technical acronyms (2+ capital letters)
+        { regex: /\b([A-Z]{2,})\b/g, className: 'font-semibold text-emerald-600' },
+        // Action verbs
+        { regex: /\b(Led|Managed|Improved|Architected|Developed|Launched|Delivered|Built|Scaled|Optimized|Created|Designed)\b/g, className: 'font-semibold text-indigo-600' },
+    ];
+
+    let highlightedText = text;
+    const parts = [];
+    let lastIndex = 0;
+
+    // Find all matches
+    const matches = [];
+    patterns.forEach(({ regex, className }) => {
+        const regexCopy = new RegExp(regex.source, regex.flags);
+        let match;
+        while ((match = regexCopy.exec(text)) !== null) {
+            matches.push({
+                index: match.index,
+                length: match[0].length,
+                text: match[0],
+                className
+            });
+        }
+    });
+
+    // Sort by index
+    matches.sort((a, b) => a.index - b.index);
+
+    // Remove overlaps (keep first match)
+    const filteredMatches = [];
+    let lastEnd = -1;
+    matches.forEach(match => {
+        if (match.index >= lastEnd) {
+            filteredMatches.push(match);
+            lastEnd = match.index + match.length;
+        }
+    });
+
+    // Build parts array
+    filteredMatches.forEach((match, idx) => {
+        // Add text before match
+        if (match.index > lastIndex) {
+            parts.push(text.substring(lastIndex, match.index));
+        }
+        // Add highlighted match
+        parts.push(
+            <span key={`highlight-${idx}`} className={match.className}>
+                {match.text}
+            </span>
+        );
+        lastIndex = match.index + match.length;
+    });
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+        parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+};
+
 const ResultCard = ({ result }) => {
     if (!result) return null;
 
@@ -61,7 +131,7 @@ const ResultCard = ({ result }) => {
                     </div>
                     <div className="flex-grow text-center md:text-left">
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Analiz Sonucu</h2>
-                        <p className="text-gray-600 leading-relaxed">{result.summary}</p>
+                        <p className="text-gray-600 leading-relaxed">{highlightText(result.summary)}</p>
                     </div>
                 </div>
 
@@ -82,7 +152,7 @@ const ResultCard = ({ result }) => {
                             {result.missingKeywords?.map((keyword, idx) => (
                                 <li key={idx} className="flex items-start gap-2 text-gray-700 bg-white p-3 rounded-xl shadow-sm border border-red-100">
                                     <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                                    {keyword}
+                                    <span>{highlightText(keyword)}</span>
                                 </li>
                             ))}
                         </ul>
@@ -104,7 +174,7 @@ const ResultCard = ({ result }) => {
                             {result.recommendations?.map((rec, idx) => (
                                 <li key={idx} className="flex items-start gap-3 text-gray-700 bg-white p-3 rounded-xl shadow-sm border border-blue-100">
                                     <ArrowRight className="w-4 h-4 text-blue-500 mt-1 flex-shrink-0" />
-                                    {rec}
+                                    <span>{highlightText(rec)}</span>
                                 </li>
                             ))}
                         </ul>

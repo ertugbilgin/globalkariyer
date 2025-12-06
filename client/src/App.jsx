@@ -16,6 +16,7 @@ import CoverLetterModal from './components/CoverLetterModal';
 import InterviewPrepModal from './components/InterviewPrepModal';
 import JobMatchModal from './components/JobMatchModal';
 import SuccessModal from './components/SuccessModal';
+import PaymentReturnModal from './components/PaymentReturnModal';
 
 function App() {
   const {
@@ -86,6 +87,7 @@ function App() {
   const [isInterviewPrepOpen, setIsInterviewPrepOpen] = useState(false);
   const [isJobMatchModalOpen, setIsJobMatchModalOpen] = useState(false);
   const [showUnlockToast, setShowUnlockToast] = useState(false);
+  const [paymentReturnModal, setPaymentReturnModal] = useState({ isOpen: false, type: null });
 
   const printRef = useRef(null);
   const justCompletedPayment = useRef(false); // Flag to prevent restoration after payment
@@ -155,8 +157,8 @@ function App() {
         setJobDesc(savedJobDesc);
       }
 
-      // Show friendly message
-      alert('Payment cancelled. No worries - your analysis is still here!');
+      // Show friendly modal
+      setPaymentReturnModal({ isOpen: true, type: 'cancelled' });
 
       // Clean URL
       window.history.replaceState({}, document.title, "/");
@@ -408,6 +410,17 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Payment Return Modal */}
+      <PaymentReturnModal
+        type={paymentReturnModal.type}
+        isOpen={paymentReturnModal.isOpen}
+        onClose={() => setPaymentReturnModal({ isOpen: false, type: null })}
+        onRetry={() => {
+          setPaymentReturnModal({ isOpen: false, type: null });
+          setPaywallFeature('cv_download');
+        }}
+      />
     </div>
   )
 }
