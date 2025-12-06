@@ -627,6 +627,7 @@ function App() {
           feature={paywallFeature}
           result={result}
           jobDesc={jobDesc}
+          user={user}  // Pass user prop
           onLogin={() => {
             setPaywallFeature(null);
             setIsLoginModalOpen(true);

@@ -1,7 +1,7 @@
 import { X, Check } from "lucide-react";
 import { useState } from "react";
 
-export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc, onLogin }) {
+export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc, onLogin, user }) {
     const [loading, setLoading] = useState(false);
     const [loadingTarget, setLoadingTarget] = useState(null); // hangi buton için loading
 
@@ -148,12 +148,14 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                                 {content.subtitle}
                             </p>
                             {/* Mobile Top Login Link - Adjusted for compactness */}
-                            <button
-                                onClick={onLogin}
-                                className="md:hidden text-[10px] sm:text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-0.5"
-                            >
-                                Already a member? Log In
-                            </button>
+                            {!user && (
+                                <button
+                                    onClick={onLogin}
+                                    className="md:hidden text-[10px] sm:text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-0.5"
+                                >
+                                    Already a member? Log In
+                                </button>
+                            )}
                         </div>
 
                         {/* Two options - Reduced Gap */}
@@ -279,14 +281,16 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                     </div>
 
                     {/* Login Link */}
-                    <div className="px-8 pb-6 text-center">
-                        <button
-                            onClick={onLogin}
-                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
-                        >
-                            Already a member? Log In
-                        </button>
-                    </div>
+                    {!user && (
+                        <div className="px-8 pb-6 text-center">
+                            <button
+                                onClick={onLogin}
+                                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
+                            >
+                                Already a member? Log In
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -313,12 +317,14 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                         <p className="text-gray-600 text-sm leading-relaxed">
                             {content.subtitle}
                         </p>
-                        <button
-                            onClick={onLogin}
-                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-1"
-                        >
-                            Already a member? Log In
-                        </button>
+                        {!user && (
+                            <button
+                                onClick={onLogin}
+                                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline pt-1"
+                            >
+                                Already a member? Log In
+                            </button>
+                        )}
                     </div>
 
                     {/* Benefits */}
@@ -390,14 +396,16 @@ export default function PaywallModal({ isOpen, onClose, feature, result, jobDesc
                     </button>
 
                     {/* Login Link */}
-                    <div className="mt-4 pt-3 border-t border-gray-100 text-center">
-                        <button
-                            onClick={onLogin}
-                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
-                        >
-                            Already a member? Log In
-                        </button>
-                    </div>
+                    {!user && (
+                        <div className="mt-4 pt-3 border-t border-gray-100 text-center">
+                            <button
+                                onClick={onLogin}
+                                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-all"
+                            >
+                                Already a member? Log In
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
