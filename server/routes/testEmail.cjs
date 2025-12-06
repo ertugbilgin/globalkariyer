@@ -1,5 +1,5 @@
 const express = require('express');
-const { transporter } = require('./services/emailService.cjs');
+const { transporter } = require('../services/emailService.cjs');
 
 const router = express.Router();
 
