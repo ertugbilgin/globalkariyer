@@ -140,28 +140,38 @@ const handleCheckoutComplete = async (session) => {
                 .eq('id', user.id);
         }
 
-        // Log transaction
-        const { data: transactionData, error: transactionError } = await supabase
+        // Log transaction (idempotent - check if already exists)
+        const { data: existingTransaction } = await supabase
             .from('transactions')
-            .insert({
-                user_id: user?.id,
-                email: email,
-                product_type: productType,
-                amount: session.amount_total,
-                currency: session.currency,
-                stripe_session_id: session.id,
-                stripe_customer_id: session.customer,
-                stripe_subscription_id: session.subscription,
-                status: 'completed'
-            })
-            .select();
+            .select('id')
+            .eq('stripe_session_id', session.id)
+            .single();
 
-        if (transactionError) {
-            console.error('❌ Failed to log transaction:', transactionError);
-            throw new Error(`Transaction logging failed: ${transactionError.message}`);
+        if (!existingTransaction) {
+            const { data: transactionData, error: transactionError } = await supabase
+                .from('transactions')
+                .insert({
+                    user_id: user?.id,
+                    email: email,
+                    product_type: productType,
+                    amount: session.amount_total,
+                    currency: session.currency,
+                    stripe_session_id: session.id,
+                    stripe_customer_id: session.customer,
+                    stripe_subscription_id: session.subscription,
+                    status: 'completed'
+                })
+                .select();
+
+            if (transactionError) {
+                console.error('❌ Failed to log transaction:', transactionError);
+                // Don't throw - continue to send emails
+            } else {
+                console.log(`✅ Transaction logged for ${email}`, transactionData);
+            }
+        } else {
+            console.log(`ℹ️ Transaction already exists for session ${session.id}, skipping`);
         }
-
-        console.log(`✅ Transaction logged for ${email}`, transactionData);
 
         // Send admin notification (non-blocking - don't fail if email fails)
         try {
